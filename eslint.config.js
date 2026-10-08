@@ -22,6 +22,10 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      // Conventions section 4: prefer `type`; `interface` only when needed
+      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+    },
   },
   {
     // Import rules from conventions section 2
