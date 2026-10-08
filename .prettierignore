@@ -1,0 +1,5 @@
+dist
+.trash
+package-lock.json
+CLAUDE.md
+.github
