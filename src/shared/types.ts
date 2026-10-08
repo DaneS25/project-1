@@ -26,3 +26,13 @@ export type Category = {
   name: string
   monthlyBudgetCents: Cents
 }
+
+/** Everything the app persists. */
+export type AppData = {
+  transactions: Transaction[]
+  categories: Category[]
+}
+
+/** Outcome of an operation that can fail in an expected way. */
+export type Result<T, E = string> =
+  { ok: true; value: T } | { ok: false; error: E }
