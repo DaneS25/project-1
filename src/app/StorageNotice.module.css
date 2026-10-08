@@ -1,0 +1,40 @@
+.region:empty {
+  display: none;
+}
+
+.region {
+  margin-block-end: var(--space-5);
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  background: color-mix(in oklch, var(--color-danger) 8%, var(--color-surface));
+  border: 1px solid color-mix(in oklch, var(--color-danger) 35%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.icon {
+  flex: none;
+  margin-block-start: 0.05rem;
+  fill: none;
+  stroke: var(--color-danger);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .notice {
+    animation: fade-in var(--dur-base) var(--ease-out);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+}
