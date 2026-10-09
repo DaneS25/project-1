@@ -21,7 +21,7 @@ export function StorageNotice() {
 
   // The live region is always rendered so screen readers announce changes.
   return (
-    <div role="status" className={styles.region}>
+    <div role="status" aria-label="Saved data" className={styles.region}>
       {notice && (
         <p className={styles.notice}>
           <svg

@@ -8,7 +8,8 @@ export type StorageNotice =
 export type AppDataContextValue = {
   data: AppData
   notice: StorageNotice | null
-  addTransaction: (transaction: Omit<Transaction, 'id'>) => void
+  /** Returns false if the transaction was invalid and nothing was added. */
+  addTransaction: (transaction: Omit<Transaction, 'id'>) => boolean
   updateTransaction: (transaction: Transaction) => void
   deleteTransaction: (id: Id) => void
   addCategory: (category: Omit<Category, 'id'>) => void

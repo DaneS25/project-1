@@ -1,0 +1,125 @@
+.form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--space-4);
+}
+
+.field {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.labelSuffix {
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+}
+
+.control {
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    border-color: color-mix(in oklch, var(--color-text-muted) 45%, transparent);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+}
+
+.amount {
+  position: relative;
+
+  & .control {
+    padding-inline-start: var(--space-6);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.currency {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--space-3);
+  display: grid;
+  place-items: center;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.error,
+.formError {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+.errorIcon {
+  flex: none;
+  margin-block-start: 0.15rem;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+.submit {
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+  font-weight: var(--weight-semibold);
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in oklch, var(--color-accent) 88%, var(--color-text));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.status {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  /* Never display: none, or screen readers can miss the announcement. */
+  color: var(--color-success);
+}
