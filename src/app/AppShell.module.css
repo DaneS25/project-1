@@ -8,12 +8,17 @@
   position: sticky;
   inset-block-start: 0;
   z-index: 1;
-  background: color-mix(in oklch, var(--color-bg) 92%, transparent);
-  border-block-end: 1px solid var(--color-border);
+  /* Text sits on the soft gradient (tested); the raw band below has none. */
+  background: var(--gradient-sunset-soft);
+  box-shadow: var(--shadow-sm);
 
-  @supports (backdrop-filter: blur(1px)) {
-    background: color-mix(in oklch, var(--color-bg) 75%, transparent);
-    backdrop-filter: saturate(1.4) blur(12px);
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 4px;
+    background: var(--gradient-sunset);
   }
 }
 
@@ -42,8 +47,12 @@
   filter: drop-shadow(var(--shadow-sm));
 }
 
-.logoTile {
-  fill: var(--color-accent);
+.logoStart {
+  stop-color: var(--color-accent-cool);
+}
+
+.logoEnd {
+  stop-color: var(--color-accent);
 }
 
 .logoTrack,

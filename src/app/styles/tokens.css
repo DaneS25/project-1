@@ -96,15 +96,39 @@
   );
   --color-shadow: light-dark(oklch(30% 0.04 265), oklch(0% 0 0));
 
+  /*
+   * A deeper blue for the start of the primary-button gradient, so the
+   * button text stays readable all the way along (>= 6.2:1 light, 8.5:1
+   * dark).
+   */
+  --color-accent-cool: light-dark(
+    color-mix(in oklch, var(--sunset-sky) 30%, oklch(30% 0.12 250)),
+    color-mix(in oklch, var(--sunset-sky) 10%, oklch(84% 0.09 228))
+  );
+  --gradient-accent: linear-gradient(
+    135deg,
+    var(--color-accent-cool),
+    var(--color-accent)
+  );
+  /* Faint sky at the top of the page warming at the bottom; text-safe. */
+  --gradient-page-wash: linear-gradient(
+    180deg,
+    light-dark(
+      color-mix(in oklch, var(--sunset-sky) 10%, var(--color-bg)),
+      color-mix(in oklch, var(--sunset-sky) 20%, var(--color-bg))
+    ),
+    var(--color-bg) 40%,
+    light-dark(
+      color-mix(in oklch, var(--sunset-peach) 18%, var(--color-bg)),
+      color-mix(in oklch, var(--sunset-ember) 8%, var(--color-bg))
+    )
+  );
+
   /* Derived tints (decorative only, never carry text contrast) */
   --color-accent-soft: color-mix(
     in oklch,
     var(--color-accent) 12%,
     transparent
-  );
-  --color-glow: light-dark(
-    color-mix(in oklch, var(--color-accent) 14%, transparent),
-    color-mix(in oklch, var(--color-accent) 10%, transparent)
   );
 
   /* Spacing: 4px base scale */

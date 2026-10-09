@@ -96,14 +96,20 @@
   padding: var(--space-2) var(--space-5);
   font-weight: var(--weight-semibold);
   color: var(--color-on-accent);
-  background: var(--color-accent);
+  background: var(--gradient-accent);
   border: none;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
 
+  /* A 10% wash of the text colour: darker in light, lighter in dark. */
   &:hover {
-    background: color-mix(in oklch, var(--color-accent) 88%, var(--color-text));
+    background:
+      linear-gradient(
+        color-mix(in oklch, var(--color-text) 10%, transparent),
+        color-mix(in oklch, var(--color-text) 10%, transparent)
+      ),
+      var(--gradient-accent);
   }
 
   @media (prefers-reduced-motion: no-preference) {

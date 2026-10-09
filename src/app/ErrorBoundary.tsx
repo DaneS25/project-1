@@ -1,4 +1,5 @@
 import { Component, type ReactNode } from 'react'
+import formStyles from '@/shared/components/Form.module.css'
 import styles from './ErrorBoundary.module.css'
 
 type ErrorBoundaryProps = {
@@ -37,7 +38,7 @@ export class ErrorBoundary extends Component<
             kept.
           </p>
           <button
-            className={styles.button}
+            className={formStyles.submit}
             type="button"
             onClick={() => {
               window.location.reload()

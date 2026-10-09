@@ -15,7 +15,21 @@
 }
 
 .title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   font-size: var(--text-lg);
+  color: var(--color-accent-text);
+
+  /* A small sunset marker before each panel heading; decorative. */
+  &::before {
+    content: '';
+    flex: none;
+    inline-size: 0.35rem;
+    block-size: 1.1em;
+    background: var(--gradient-sunset);
+    border-radius: var(--radius-full);
+  }
 }
 
 .description {
