@@ -1,4 +1,5 @@
 import { useState, type SubmitEvent } from 'react'
+import { Button } from '@/shared/components/Button'
 import styles from '@/shared/components/Form.module.css'
 import { useFormDraft } from '@/shared/hooks/useFormDraft'
 import { useAppData } from '@/shared/store/AppDataContext'
@@ -50,9 +51,9 @@ export function CategoryForm() {
     <form className={styles.form} noValidate onSubmit={handleSubmit}>
       <CategoryFields form={form} onChange={handleChange} />
       <div className={styles.actions}>
-        <button className={styles.submit} type="submit">
+        <Button variant="primary" type="submit">
           Add category
-        </button>
+        </Button>
         <p className={styles.status} role="status">
           {outcome.kind === 'added' && outcome.message}
         </p>

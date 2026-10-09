@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { Button } from './Button'
 import { useModalDialog } from '@/shared/hooks/useModalDialog'
 import styles from './Dialog.module.css'
 import formStyles from './Form.module.css'
@@ -77,23 +78,19 @@ export function ConfirmDialog({
           </p>
         )}
         <div className={formStyles.actions}>
-          <button
-            className={formStyles.danger}
-            type="button"
-            onClick={handleConfirm}
-          >
+          <Button variant="danger" type="button" onClick={handleConfirm}>
             {confirmLabel}
-          </button>
-          <button
+          </Button>
+          <Button
             ref={cancelRef}
-            className={formStyles.secondary}
+            variant="secondary"
             type="button"
             onClick={() => {
               closeThen(onCancel)
             }}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </dialog>

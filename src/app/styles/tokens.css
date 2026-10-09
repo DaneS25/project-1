@@ -111,6 +111,22 @@
     var(--color-accent)
   );
   /*
+   * The primary button's hover gradient: the accent gradient continued
+   * towards a faint peach glint (accent pulled 15% to peach; 25% would drop
+   * the button text below 4.5:1). Drawn 150% wide, so at rest the button
+   * shows the same dusk blue to orange as --gradient-accent.
+   */
+  --color-accent-glint: light-dark(
+    color-mix(in oklch, var(--color-accent) 85%, var(--sunset-peach)),
+    color-mix(in oklch, var(--color-accent) 85%, oklch(90% 0.08 68))
+  );
+  --gradient-accent-shift: linear-gradient(
+    135deg,
+    var(--color-accent-cool),
+    var(--color-accent) 66.667%,
+    var(--color-accent-glint)
+  );
+  /*
    * Budget bars: dusk blue to burnt orange, left to right. Both ends are at
    * least 5.6:1 against the surface and the sunken track, so the bar stays
    * visible in both themes.

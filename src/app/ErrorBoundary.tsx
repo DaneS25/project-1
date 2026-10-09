@@ -1,5 +1,5 @@
 import { Component, type ReactNode } from 'react'
-import formStyles from '@/shared/components/Form.module.css'
+import { Button } from '@/shared/components/Button'
 import styles from './ErrorBoundary.module.css'
 
 type ErrorBoundaryProps = {
@@ -37,15 +37,15 @@ export class ErrorBoundary extends Component<
             Reloading usually fixes it. Data already saved in this browser is
             kept.
           </p>
-          <button
-            className={formStyles.submit}
+          <Button
+            variant="primary"
             type="button"
             onClick={() => {
               window.location.reload()
             }}
           >
             Reload the page
-          </button>
+          </Button>
         </div>
       </main>
     )

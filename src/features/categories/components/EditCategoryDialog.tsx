@@ -1,4 +1,5 @@
 import { useId, useState, type SubmitEvent } from 'react'
+import { Button } from '@/shared/components/Button'
 import dialogStyles from '@/shared/components/Dialog.module.css'
 import formStyles from '@/shared/components/Form.module.css'
 import { useFormDraft } from '@/shared/hooks/useFormDraft'
@@ -79,18 +80,18 @@ export function EditCategoryDialog({
           </p>
         )}
         <div className={formStyles.actions}>
-          <button className={formStyles.submit} type="submit">
+          <Button variant="primary" type="submit">
             Save changes
-          </button>
-          <button
-            className={formStyles.secondary}
+          </Button>
+          <Button
+            variant="secondary"
             type="button"
             onClick={() => {
               closeThen(onCancel)
             }}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </dialog>
