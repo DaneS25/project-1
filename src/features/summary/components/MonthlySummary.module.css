@@ -28,9 +28,65 @@
 .content {
   display: grid;
   gap: var(--space-5);
+  /* Snapshotted on its own when the month changes (see below). */
+  view-transition-name: month-summary;
 
-  @media (prefers-reduced-motion: no-preference) {
-    animation: fade-in var(--dur-base) var(--ease-out);
+  /* Without view transitions, the new month just fades in. */
+  @supports not (view-transition-name: none) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: fade-in var(--dur-base) var(--ease-out);
+    }
+  }
+}
+
+/*
+ * Month switching (View Transitions API, started by MonthlySummary only
+ * when motion is allowed): Next slides the content left, Previous slides it
+ * right. data-transition on <html> names the direction while it plays.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-transition='next']::view-transition-old(month-summary) {
+    animation: month-out-left var(--dur-base) var(--ease-in-out) both;
+  }
+
+  :root[data-transition='next']::view-transition-new(month-summary) {
+    animation: month-in-right var(--dur-base) var(--ease-in-out) both;
+  }
+
+  :root[data-transition='previous']::view-transition-old(month-summary) {
+    animation: month-out-right var(--dur-base) var(--ease-in-out) both;
+  }
+
+  :root[data-transition='previous']::view-transition-new(month-summary) {
+    animation: month-in-left var(--dur-base) var(--ease-in-out) both;
+  }
+}
+
+@keyframes month-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-2rem);
+  }
+}
+
+@keyframes month-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(2rem);
+  }
+}
+
+@keyframes month-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(2rem);
+  }
+}
+
+@keyframes month-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-2rem);
   }
 }
 
