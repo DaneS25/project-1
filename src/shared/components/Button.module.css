@@ -91,6 +91,68 @@
   }
 }
 
+/*
+ * Sun flare: a warm glow that bursts from the click point (set as
+ * --flare-x/--flare-y by Button) and fades. It sits between the gradient
+ * and the label, in the glint colour, so the text stays at least 4.8:1
+ * (light) and 8.5:1 (dark) while it plays. Off with reduced motion.
+ */
+.primary::after {
+  content: '';
+  position: absolute;
+  /* Physical sides: the click point is measured from the top-left corner. */
+  top: var(--flare-y, 50%);
+  left: var(--flare-x, 50%);
+  z-index: -1;
+  inline-size: 250%;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle,
+    var(--color-accent-glint),
+    color-mix(in oklch, var(--color-accent-glint) 40%, transparent) 30%,
+    transparent 60%
+  );
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .primary[data-flare='a']::after {
+    animation: flare-a var(--dur-slow) var(--ease-out);
+  }
+
+  .primary[data-flare='b']::after {
+    animation: flare-b var(--dur-slow) var(--ease-out);
+  }
+}
+
+/* Two identical animations, alternated so each click restarts the flare. */
+@keyframes flare-a {
+  from {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes flare-b {
+  from {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 .secondary {
   color: var(--color-text);
   background: var(--color-surface);
