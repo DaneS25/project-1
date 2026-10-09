@@ -62,4 +62,20 @@ describe('App', () => {
       data: { transactions: [{ amountCents: 1250, date: '2026-10-09' }] },
     })
   })
+
+  it('shows a transaction added with the form at the top of the list', async () => {
+    render(<App today="2026-10-09" />)
+    const form = within(
+      screen.getByRole('region', { name: 'Add a transaction' }),
+    )
+
+    await userEvent.type(form.getByLabelText('Amount'), '40')
+    await userEvent.selectOptions(form.getByLabelText('Category'), 'Transport')
+    await userEvent.click(form.getByRole('button', { name: 'Add transaction' }))
+
+    const list = within(screen.getByRole('region', { name: 'Transactions' }))
+    expect(list.getAllByRole('listitem')[0]).toHaveTextContent(
+      /Transport.*9 Oct 2026.*\$40\.00/,
+    )
+  })
 })
