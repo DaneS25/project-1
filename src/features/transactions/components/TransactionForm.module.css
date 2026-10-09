@@ -142,3 +142,23 @@
     transition: background-color var(--dur-fast) var(--ease-out);
   }
 }
+
+.danger {
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+  font-weight: var(--weight-semibold);
+  color: var(--color-on-accent);
+  background: var(--color-danger);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in oklch, var(--color-danger) 88%, var(--color-text));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color var(--dur-fast) var(--ease-out);
+  }
+}

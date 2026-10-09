@@ -39,3 +39,12 @@
     opacity: 0;
   }
 }
+
+.message {
+  color: var(--color-text-muted);
+}
+
+.content {
+  display: grid;
+  gap: var(--space-5);
+}

@@ -190,6 +190,18 @@ describe('editing a transaction', () => {
     })
   })
 
+  it('discards changes on Escape and returns focus to the Edit button', async () => {
+    const { writes } = renderList()
+    await openEditor()
+
+    await userEvent.type(inDialog().getByLabelText('Amount'), '9')
+    await userEvent.keyboard('{Escape}')
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(editShopButton()).toHaveFocus()
+    expect(writes).toEqual([])
+  })
+
   it('discards changes on Cancel and returns focus to the Edit button', async () => {
     const { writes } = renderList()
     await openEditor()
