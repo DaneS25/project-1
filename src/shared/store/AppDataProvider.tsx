@@ -50,9 +50,8 @@ export function AppDataProvider({
         type: 'transactionAdded',
         transaction: { ...transaction, id: createId() },
       }),
-    updateTransaction: (transaction) => {
-      apply({ type: 'transactionUpdated', transaction })
-    },
+    updateTransaction: (transaction) =>
+      apply({ type: 'transactionUpdated', transaction }),
     deleteTransaction: (id) => {
       apply({ type: 'transactionDeleted', id })
     },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatCents, parseAmountToCents } from './money'
+import { centsToAmountInput, formatCents, parseAmountToCents } from './money'
 
 /** Parses and returns the cents, failing the test if parsing failed. */
 function cents(input: string): number {
@@ -191,4 +191,30 @@ describe('formatCents', () => {
       expect(() => formatCents(value)).toThrow(RangeError)
     },
   )
+})
+
+describe('centsToAmountInput', () => {
+  it.each([
+    [1250, '12.50'],
+    [5, '0.05'],
+    [100, '1.00'],
+    [123456789, '1234567.89'],
+    [0, '0.00'],
+  ])('turns %i cents into "%s"', (cents, text) => {
+    expect(centsToAmountInput(cents)).toBe(text)
+  })
+
+  it('round-trips through parseAmountToCents', () => {
+    for (const cents of [1, 29, 1250, Number.MAX_SAFE_INTEGER]) {
+      expect(parseAmountToCents(centsToAmountInput(cents))).toEqual({
+        ok: true,
+        value: cents,
+      })
+    }
+  })
+
+  it('throws for a value that is not a non-negative whole number of cents', () => {
+    expect(() => centsToAmountInput(-1)).toThrow(RangeError)
+    expect(() => centsToAmountInput(1.5)).toThrow(RangeError)
+  })
 })

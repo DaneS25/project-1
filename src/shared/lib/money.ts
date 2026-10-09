@@ -78,3 +78,18 @@ function isDecimalString(value: string): value is Intl.StringNumericLiteral {
 function fail(error: AmountError): Result<Cents, AmountError> {
   return { ok: false, error }
 }
+
+/**
+ * Turns cents back into the plain text a user would type, e.g. 1250 →
+ * "12.50", for pre-filling an amount field. No currency sign or thousands
+ * separators, and no floating-point division.
+ */
+export function centsToAmountInput(cents: Cents): string {
+  if (!Number.isSafeInteger(cents) || cents < 0) {
+    throw new RangeError(
+      `Cents must be a non-negative safe integer, got ${String(cents)}`,
+    )
+  }
+  const digits = String(cents).padStart(3, '0')
+  return `${digits.slice(0, -2)}.${digits.slice(-2)}`
+}

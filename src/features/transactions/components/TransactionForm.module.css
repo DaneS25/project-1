@@ -123,3 +123,22 @@
   /* Never display: none, or screen readers can miss the announcement. */
   color: var(--color-success);
 }
+
+.secondary {
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-surface-sunken);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color var(--dur-fast) var(--ease-out);
+  }
+}
