@@ -27,9 +27,14 @@
 
 .headerInner {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-3);
   padding-block: var(--space-4);
+}
+
+.headerEnd {
+  margin-inline-start: auto;
 }
 
 .logo {

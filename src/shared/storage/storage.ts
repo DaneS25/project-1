@@ -68,15 +68,20 @@ export function loadData(storage?: StorageLike): LoadResult {
 /** Writes app data to storage. Never throws (storage may be full or blocked). */
 export function saveData(data: AppData, storage?: StorageLike): SaveResult {
   const envelope: StoredEnvelope = { version: CURRENT_VERSION, data }
-  return write(STORAGE_KEY, JSON.stringify(envelope), storage)
+  return writeString(STORAGE_KEY, JSON.stringify(envelope), storage)
 }
 
 /** Keeps a copy of unreadable stored text before it gets overwritten. */
 export function backupRawData(raw: string, storage?: StorageLike): SaveResult {
-  return write(BACKUP_KEY, raw, storage)
+  return writeString(BACKUP_KEY, raw, storage)
 }
 
-function write(key: string, value: string, storage?: StorageLike): SaveResult {
+/** Writes one string to storage. Never throws (storage may be full or blocked). */
+export function writeString(
+  key: string,
+  value: string,
+  storage?: StorageLike,
+): SaveResult {
   try {
     const store = storage ?? window.localStorage
     store.setItem(key, value)
