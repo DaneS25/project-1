@@ -1,4 +1,4 @@
-import type { IsoDate } from '@/shared/types'
+import type { IsoDate, MonthKey } from '@/shared/types'
 
 const ISO_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
 
@@ -56,4 +56,17 @@ export function formatIsoDate(date: IsoDate): string {
   return displayDate.format(
     new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])),
   )
+}
+
+const MONTH_KEY_PATTERN = /^\d{4}-(\d{2})$/
+
+/** True if `value` is a real month written as `YYYY-MM`. */
+export function isMonthKey(value: string): boolean {
+  const month = Number(MONTH_KEY_PATTERN.exec(value)?.[1])
+  return month >= 1 && month <= 12
+}
+
+/** The `YYYY-MM` month a `YYYY-MM-DD` date falls in, by slicing the text. */
+export function monthOf(date: IsoDate): MonthKey {
+  return date.slice(0, 7)
 }

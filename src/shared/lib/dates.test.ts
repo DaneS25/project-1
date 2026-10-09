@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { formatIsoDate, isIsoDate, toIsoDate } from './dates'
+import {
+  formatIsoDate,
+  isIsoDate,
+  isMonthKey,
+  monthOf,
+  toIsoDate,
+} from './dates'
 
 describe('isIsoDate', () => {
   it.each([
@@ -56,5 +62,37 @@ describe('formatIsoDate', () => {
 
   it('throws for a value that is not a real date', () => {
     expect(() => formatIsoDate('2026-02-30')).toThrow(RangeError)
+  })
+})
+
+describe('isMonthKey', () => {
+  it.each(['2026-10', '2026-01', '2026-12', '0001-01'])(
+    'accepts %s',
+    (value) => {
+      expect(isMonthKey(value)).toBe(true)
+    },
+  )
+
+  it.each([
+    '2026-00',
+    '2026-13',
+    '2026-1',
+    '26-10',
+    '2026-10-09',
+    '',
+    'abcd-ef',
+  ])('rejects "%s"', (value) => {
+    expect(isMonthKey(value)).toBe(false)
+  })
+})
+
+describe('monthOf', () => {
+  it.each([
+    ['2026-10-01', '2026-10'],
+    ['2026-10-31', '2026-10'],
+    ['2026-12-31', '2026-12'],
+    ['2027-01-01', '2027-01'],
+  ])('puts %s in %s', (date, month) => {
+    expect(monthOf(date)).toBe(month)
   })
 })
