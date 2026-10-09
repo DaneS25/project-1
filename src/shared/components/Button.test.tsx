@@ -77,4 +77,79 @@ describe('Button', () => {
 
     expect(screen.getByRole('button', { name: 'Next' })).toHaveClass('extra')
   })
+
+  describe('sun flare', () => {
+    function renderPrimary(onClick = vi.fn()) {
+      render(
+        <Button variant="primary" onClick={onClick}>
+          Add transaction
+        </Button>,
+      )
+      const button = screen.getByRole('button', { name: 'Add transaction' })
+      // jsdom has no layout, so give the button a box to measure.
+      vi.spyOn(button, 'getBoundingClientRect').mockReturnValue(
+        DOMRect.fromRect({ x: 100, y: 50, width: 160, height: 44 }),
+      )
+      return { button, onClick }
+    }
+
+    it('bursts from where the pointer clicked', async () => {
+      const { button } = renderPrimary()
+
+      await userEvent.pointer({
+        keys: '[MouseLeft]',
+        target: button,
+        coords: { clientX: 130, clientY: 60 },
+      })
+
+      expect(button.style.getPropertyValue('--flare-x')).toBe('30px')
+      expect(button.style.getPropertyValue('--flare-y')).toBe('10px')
+      expect(button).toHaveAttribute('data-flare')
+    })
+
+    it('bursts from the centre when pressed with Enter or Space', async () => {
+      const { button } = renderPrimary()
+      button.focus()
+
+      await userEvent.keyboard('{Enter}')
+      expect(button.style.getPropertyValue('--flare-x')).toBe('80px')
+      expect(button.style.getPropertyValue('--flare-y')).toBe('22px')
+
+      button.style.removeProperty('--flare-x')
+      await userEvent.keyboard(' ')
+      expect(button.style.getPropertyValue('--flare-x')).toBe('80px')
+    })
+
+    it('restarts on every click', async () => {
+      const { button } = renderPrimary()
+
+      await userEvent.click(button)
+      const first = button.dataset.flare
+      await userEvent.click(button)
+
+      expect(button.dataset.flare).not.toBe(first)
+    })
+
+    it('runs the action straight away, with nothing waiting on the glow', async () => {
+      let flareWhenClicked: string | undefined
+      const onClick = vi.fn(() => {
+        flareWhenClicked = button.dataset.flare
+      })
+      const { button } = renderPrimary(onClick)
+
+      await userEvent.click(button)
+
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(flareWhenClicked).toBeDefined()
+    })
+
+    it('is only on primary buttons', async () => {
+      render(<Button variant="secondary">Cancel</Button>)
+      const button = screen.getByRole('button', { name: 'Cancel' })
+
+      await userEvent.click(button)
+
+      expect(button).not.toHaveAttribute('data-flare')
+    })
+  })
 })
