@@ -90,10 +90,3 @@ function budgetErrorMessage(error: BudgetError): string {
     }
   }
 }
-
-/** Returns a new array sorted by name, ignoring case and accents. */
-export function sortByName(categories: readonly Category[]): Category[] {
-  return [...categories].sort((a, b) =>
-    a.name.localeCompare(b.name, 'en-NZ', { sensitivity: 'base' }),
-  )
-}

@@ -70,3 +70,35 @@ export function isMonthKey(value: string): boolean {
 export function monthOf(date: IsoDate): MonthKey {
   return date.slice(0, 7)
 }
+
+/**
+ * Moves a `YYYY-MM` month by whole months (negative goes back), using
+ * integer arithmetic on the year and month, e.g. ("2026-01", -1) → "2025-12".
+ */
+export function addMonths(month: MonthKey, delta: number): MonthKey {
+  const match = MONTH_KEY_PATTERN.exec(month)
+  if (!match || !isMonthKey(month) || !Number.isInteger(delta)) {
+    throw new RangeError(`Expected a YYYY-MM month and whole months`)
+  }
+  const index = Number(month.slice(0, 4)) * 12 + Number(match[1]) - 1 + delta
+  const year = Math.floor(index / 12)
+  const monthNumber = index - year * 12 + 1
+  return `${String(year).padStart(4, '0')}-${String(monthNumber).padStart(2, '0')}`
+}
+
+const displayMonth = new Intl.DateTimeFormat('en-NZ', {
+  month: 'long',
+  year: 'numeric',
+})
+
+/** Formats a `YYYY-MM` month for display, e.g. "October 2026". */
+export function formatMonth(month: MonthKey): string {
+  const match = MONTH_KEY_PATTERN.exec(month)
+  if (!match || !isMonthKey(month)) {
+    throw new RangeError(`Expected a YYYY-MM month, got "${month}"`)
+  }
+  // Built from numeric parts in local time, on the 1st of the month.
+  return displayMonth.format(
+    new Date(Number(month.slice(0, 4)), Number(match[1]) - 1, 1),
+  )
+}

@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Category } from '@/shared/types'
-import {
-  parseBudgetToCents,
-  sortByName,
-  validateCategoryDraft,
-} from './categoryDraft'
+import { parseBudgetToCents, validateCategoryDraft } from './categoryDraft'
 
 const categories: Category[] = [
   { id: 'c1', name: 'Groceries', monthlyBudgetCents: 60000 },
@@ -92,18 +88,5 @@ describe('validateCategoryDraft', () => {
       'name',
       'budget',
     ])
-  })
-})
-
-describe('sortByName', () => {
-  it('sorts by name ignoring case, without changing the input', () => {
-    const input: Category[] = [
-      { id: 'a', name: 'rent', monthlyBudgetCents: 0 },
-      { id: 'b', name: 'Eating out', monthlyBudgetCents: 0 },
-      { id: 'c', name: 'groceries', monthlyBudgetCents: 0 },
-    ]
-
-    expect(sortByName(input).map((c) => c.id)).toEqual(['b', 'c', 'a'])
-    expect(input.map((c) => c.id)).toEqual(['a', 'b', 'c'])
   })
 })

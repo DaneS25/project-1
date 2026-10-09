@@ -3,8 +3,8 @@ import { AppShell } from '@/app/AppShell'
 import { ErrorBoundary } from '@/app/ErrorBoundary'
 import { StorageNotice } from '@/app/StorageNotice'
 import { CategoryForm, CategoryList } from '@/features/categories'
+import { MonthlySummary } from '@/features/summary'
 import { TransactionForm, TransactionList } from '@/features/transactions'
-import { EmptyState } from '@/shared/components/EmptyState'
 import { Panel } from '@/shared/components/Panel'
 import { toIsoDate } from '@/shared/lib/dates'
 import { AppDataProvider } from '@/shared/store/AppDataProvider'
@@ -30,13 +30,10 @@ export function App({ today: fixedToday }: AppProps) {
               <TransactionForm today={today} />
             </Panel>
             <Panel
-              title="This month"
+              title="Monthly summary"
               description="Spending against each category's budget"
             >
-              <EmptyState
-                title="No spending yet"
-                description="Add a transaction to see how you're tracking against your budgets."
-              />
+              <MonthlySummary today={today} />
             </Panel>
             <Panel title="Transactions" description="Newest first">
               <TransactionList />

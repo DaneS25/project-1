@@ -20,3 +20,15 @@ export function isCategoryNameTaken(
       category.id !== exceptId && categoryNameKey(category.name) === key,
   )
 }
+
+/** Orders two categories by name, ignoring case and accents. */
+export function compareCategoryNames(a: Category, b: Category): number {
+  return a.name.localeCompare(b.name, 'en-NZ', { sensitivity: 'base' })
+}
+
+/** Returns a new array sorted by name, ignoring case and accents. */
+export function sortCategoriesByName(
+  categories: readonly Category[],
+): Category[] {
+  return [...categories].sort(compareCategoryNames)
+}
