@@ -12,6 +12,13 @@ type TransactionRowProps = {
   deleteButtonRef: (button: HTMLButtonElement | null) => void
   onEdit: () => void
   onDelete: () => void
+  /**
+   * True for a just-deleted row kept on screen while it fades out. It's
+   * inert and hidden from screen readers; the store has already removed it.
+   */
+  isLeaving?: boolean
+  /** Called when the fade-out transition finishes. */
+  onLeft?: () => void
 }
 
 /** One transaction in the list, with its Edit and Delete buttons. */
@@ -22,6 +29,8 @@ export function TransactionRow({
   deleteButtonRef,
   onEdit,
   onDelete,
+  isLeaving = false,
+  onLeft,
 }: TransactionRowProps) {
   const amount = formatCents(transaction.amountCents)
   const date = formatIsoDate(transaction.date)
@@ -29,7 +38,16 @@ export function TransactionRow({
   const description = `${categoryName}, ${amount}, ${date}`
 
   return (
-    <li className={styles.item}>
+    <li
+      className={
+        isLeaving ? [styles.item, styles.leaving].join(' ') : styles.item
+      }
+      aria-hidden={isLeaving || undefined}
+      inert={isLeaving}
+      onTransitionEnd={(event) => {
+        if (isLeaving && event.target === event.currentTarget) onLeft?.()
+      }}
+    >
       <div className={styles.details}>
         <p className={styles.category}>{categoryName}</p>
         {transaction.note && <p className={styles.note}>{transaction.note}</p>}

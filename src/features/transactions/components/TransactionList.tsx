@@ -1,13 +1,22 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { EmptyState } from '@/shared/components/EmptyState'
 import { formatCents } from '@/shared/lib/money'
+import { canAnimateExit } from '@/shared/lib/motion'
 import { useAppData } from '@/shared/store/AppDataContext'
 import type { Id, Transaction } from '@/shared/types'
+import { withLeavingRow, type LeavingRow } from '../logic/leavingRow'
 import { sortNewestFirst } from '../logic/sortTransactions'
 import { DeleteTransactionDialog } from './DeleteTransactionDialog'
 import { EditTransactionDialog } from './EditTransactionDialog'
 import styles from './TransactionList.module.css'
 import { TransactionRow } from './TransactionRow'
+
+/**
+ * Longest a deleted row is kept while it fades out (the CSS fade is
+ * --dur-base, 250 ms). A fallback: the row normally goes on transitionend,
+ * but nothing waits on that event alone.
+ */
+export const LEAVE_FALLBACK_MS = 350
 
 type OpenDialog = { kind: 'edit'; id: Id } | { kind: 'delete'; id: Id }
 
@@ -27,6 +36,7 @@ export function TransactionList() {
   const deleteButtons = useRef(new Map<Id, HTMLButtonElement>())
   const listRef = useRef<HTMLDivElement>(null)
   const pendingFocus = useRef<FocusTarget | null>(null)
+  const [leaving, setLeaving] = useState<LeavingRow | null>(null)
 
   // Focus is synced to the DOM after the commit, not in the handler: the
   // row may have moved (edit) or gone (delete) by then.
@@ -51,7 +61,19 @@ export function TransactionList() {
     }
   })
 
+  // An allowed effect: the fallback timer that clears a fading-out row.
+  useEffect(() => {
+    if (!leaving) return
+    const timer = setTimeout(() => {
+      setLeaving(null)
+    }, LEAVE_FALLBACK_MS)
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [leaving])
+
   const sorted = sortNewestFirst(data.transactions)
+  const rows = withLeavingRow(sorted, leaving)
   const categoryNames = new Map(data.categories.map((c) => [c.id, c.name]))
   const categoryName = (transaction: Transaction) =>
     categoryNames.get(transaction.categoryId) ?? 'Unknown category'
@@ -81,17 +103,21 @@ export function TransactionList() {
       <p className={styles.status} role="status">
         {status}
       </p>
-      {sorted.length === 0 ? (
+      {rows.length === 0 ? (
         <EmptyState
           title="No transactions yet"
           description="Transactions you add will appear here."
         />
       ) : (
         <ul className={styles.list}>
-          {sorted.map((transaction) => (
+          {rows.map((transaction) => (
             <TransactionRow
               key={transaction.id}
               transaction={transaction}
+              isLeaving={leaving?.transaction.id === transaction.id}
+              onLeft={() => {
+                setLeaving(null)
+              }}
               categoryName={categoryName(transaction)}
               editButtonRef={(button) => {
                 if (button) editButtons.current.set(transaction.id, button)
@@ -137,6 +163,14 @@ export function TransactionList() {
             setStatus(
               `Deleted ${formatCents(deleted.amountCents)} from ${categoryName(deleted)}.`,
             )
+            // The store has already removed it; keep a copy on screen to
+            // fade out where it was, unless motion is off.
+            if (canAnimateExit()) {
+              setLeaving({
+                transaction: deleted,
+                index: sorted.findIndex((t) => t.id === deleted.id),
+              })
+            }
             closeDialog(focusTargetAfterDelete(deleted.id))
           }}
           onCancel={() => {
