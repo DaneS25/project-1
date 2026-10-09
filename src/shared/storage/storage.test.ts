@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import type { AppData } from '@/shared/types'
 import { CURRENT_VERSION } from './migrations'
-import { loadData, saveData, STORAGE_KEY, type StorageLike } from './storage'
+import {
+  BACKUP_KEY,
+  backupRawData,
+  loadData,
+  saveData,
+  STORAGE_KEY,
+  type StorageLike,
+} from './storage'
 
 const data: AppData = {
   categories: [{ id: 'c1', name: 'Groceries', monthlyBudgetCents: 60000 }],
@@ -34,10 +41,10 @@ describe('loadData', () => {
     expect(loadData()).toEqual({ status: 'loaded', data })
   })
 
-  it('reports corrupt for invalid JSON', () => {
+  it('reports corrupt for invalid JSON, with the raw stored text', () => {
     localStorage.setItem(STORAGE_KEY, '{not json')
 
-    expect(loadData()).toMatchObject({ status: 'corrupt' })
+    expect(loadData()).toMatchObject({ status: 'corrupt', raw: '{not json' })
   })
 
   it('reports corrupt when the schema version is missing', () => {
@@ -46,6 +53,7 @@ describe('loadData', () => {
     expect(loadData()).toEqual({
       status: 'corrupt',
       error: 'Missing schema version',
+      raw: JSON.stringify({ data }),
     })
   })
 
@@ -89,6 +97,24 @@ describe('saveData', () => {
 
   it('reports a failure instead of throwing when storage is full', () => {
     expect(saveData(data, throwingStorage)).toEqual({
+      ok: false,
+      error: 'Quota exceeded',
+    })
+  })
+})
+
+describe('backupRawData', () => {
+  it('copies the raw text to the backup key without touching the main key', () => {
+    localStorage.setItem(STORAGE_KEY, '{not json')
+
+    expect(backupRawData('{not json')).toEqual({ ok: true })
+
+    expect(localStorage.getItem(BACKUP_KEY)).toBe('{not json')
+    expect(localStorage.getItem(STORAGE_KEY)).toBe('{not json')
+  })
+
+  it('reports a failure instead of throwing when storage is full', () => {
+    expect(backupRawData('x', throwingStorage)).toEqual({
       ok: false,
       error: 'Quota exceeded',
     })
