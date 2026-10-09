@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { CURRENT_VERSION } from '@/shared/storage/migrations'
@@ -195,5 +195,44 @@ describe('MonthlySummary', () => {
       ),
     ).toBeInTheDocument()
     expect(screen.queryByRole('list')).not.toBeInTheDocument()
+  })
+
+  describe('budget bars', () => {
+    // The bars are decorative (aria-hidden), so a test id is the only handle.
+    const bar = (name: string) => {
+      const row = screen.getByText(name, { selector: 'p' }).closest('li')
+      return within(row ?? document.body).queryByTestId('budget-bar')
+    }
+    const fillOf = (name: string) =>
+      bar(name)?.querySelector('div')?.style.transform
+
+    it('fills each budgeted category in proportion to its budget', () => {
+      renderSummary([
+        spend('groceries', 15000, '2026-10-02'),
+        spend('gifts', 100, '2026-10-02'),
+      ])
+
+      expect(fillOf('Groceries')).toBe('scaleX(0.25)')
+      expect(bar('Groceries')).toHaveAttribute('aria-hidden', 'true')
+    })
+
+    it('caps the bar at full when over budget, keeping the words', () => {
+      renderSummary([spend('groceries', 90000, '2026-10-02')])
+
+      expect(fillOf('Groceries')).toBe('scaleX(1)')
+      expect(rows()[1]).toContain('Over budget by $300.00')
+    })
+
+    it('shows an empty track for a budgeted category with no spending', () => {
+      renderSummary([spend('groceries', 100, '2026-10-02')])
+
+      expect(bar('Rent')).toBeEmptyDOMElement()
+    })
+
+    it('gives no bar to a category with no budget set', () => {
+      renderSummary([spend('gifts', 3000, '2026-10-05')])
+
+      expect(bar('gifts')).toBeNull()
+    })
   })
 })

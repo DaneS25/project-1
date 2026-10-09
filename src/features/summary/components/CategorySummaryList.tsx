@@ -1,5 +1,7 @@
 import { formatCents } from '@/shared/lib/money'
+import { budgetFill } from '../logic/progress'
 import type { CategorySummary } from '../logic/summary'
+import { BudgetBar } from './BudgetBar'
 import styles from './MonthlySummary.module.css'
 import { OverBudgetIcon } from './OverBudgetIcon'
 
@@ -10,7 +12,7 @@ type CategorySummaryListProps = {
 /**
  * Spending per category. A category with a budget shows spent of budget and
  * what's left (or how far over, in words and with an icon, not only red);
- * one with no budget shows only what was spent.
+ * one with no budget shows only what was spent, and no bar.
  */
 export function CategorySummaryList({ categories }: CategorySummaryListProps) {
   return (
@@ -24,6 +26,7 @@ export function CategorySummaryList({ categories }: CategorySummaryListProps) {
                 {formatCents(summary.spentCents)} spent of{' '}
                 {formatCents(summary.budgetCents)}
               </p>
+              <BudgetBar fill={budgetFill(summary) ?? 0} />
               {summary.isOverBudget ? (
                 <p className={[styles.standing, styles.over].join(' ')}>
                   <OverBudgetIcon />

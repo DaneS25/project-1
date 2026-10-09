@@ -141,6 +141,34 @@
   color: var(--color-text-muted);
 }
 
+/* Budget bar: decorative; the text beside it carries the figures. */
+.bar {
+  grid-column: 1 / -1;
+  block-size: 0.5rem;
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.barFill {
+  block-size: 100%;
+  background-image: var(--gradient-progress);
+  background-repeat: no-repeat;
+  transform-origin: left center;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: bar-grow var(--dur-base) var(--ease-out);
+  }
+}
+
+/* Grows from empty to the inline scaleX() set on the element. */
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
 /* Over budget: red, but always with words and an icon too. */
 .over {
   color: var(--color-danger);

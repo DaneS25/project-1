@@ -110,6 +110,16 @@
     var(--color-accent-cool),
     var(--color-accent)
   );
+  /*
+   * Budget bars: dusk blue to burnt orange, left to right. Both ends are at
+   * least 5.6:1 against the surface and the sunken track, so the bar stays
+   * visible in both themes.
+   */
+  --gradient-progress: linear-gradient(
+    90deg,
+    var(--color-accent-cool),
+    var(--color-accent)
+  );
   /* Faint sky at the top of the page warming at the bottom; text-safe. */
   --gradient-page-wash: linear-gradient(
     180deg,
