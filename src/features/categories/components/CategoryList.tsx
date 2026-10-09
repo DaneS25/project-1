@@ -1,9 +1,9 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { EmptyState } from '@/shared/components/EmptyState'
+import { sortCategoriesByName } from '@/shared/lib/categories'
 import { useAppData } from '@/shared/store/AppDataContext'
 import type { Category, Id } from '@/shared/types'
 import { describeBudget } from '../logic/budgetText'
-import { sortByName } from '../logic/categoryDraft'
 import {
   countTransactionsByCategory,
   transactionCountLabel,
@@ -56,7 +56,7 @@ export function CategoryList() {
     }
   })
 
-  const sorted = sortByName(data.categories)
+  const sorted = sortCategoriesByName(data.categories)
   const counts = countTransactionsByCategory(data.transactions)
   const dialogCategory = data.categories.find((c) => c.id === openDialog?.id)
 

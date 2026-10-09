@@ -24,7 +24,7 @@ describe('App', () => {
       within(main).getByRole('region', { name: 'Add a transaction' }),
     ).toBeInTheDocument()
     expect(
-      within(main).getByRole('region', { name: 'This month' }),
+      within(main).getByRole('region', { name: 'Monthly summary' }),
     ).toBeInTheDocument()
     expect(
       within(main).getByRole('region', { name: 'Transactions' }),
@@ -106,5 +106,24 @@ describe('App', () => {
     expect(
       within(transactionCategory).queryByRole('option', { name: 'Fuel' }),
     ).not.toBeInTheDocument()
+  })
+
+  it('updates the monthly summary when a transaction is added', async () => {
+    render(<App today="2026-10-09" />)
+    const summary = within(
+      screen.getByRole('region', { name: 'Monthly summary' }),
+    )
+    expect(summary.getByText('No spending in October 2026')).toBeInTheDocument()
+    const form = within(
+      screen.getByRole('region', { name: 'Add a transaction' }),
+    )
+
+    await userEvent.type(form.getByLabelText('Amount'), '40')
+    await userEvent.selectOptions(form.getByLabelText('Category'), 'Transport')
+    await userEvent.click(form.getByRole('button', { name: 'Add transaction' }))
+
+    expect(summary.getByText('Transport').closest('li')).toHaveTextContent(
+      'Transport$40.00 spentNo budget set',
+    )
   })
 })

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
+  addMonths,
   formatIsoDate,
+  formatMonth,
   isIsoDate,
   isMonthKey,
   monthOf,
@@ -94,5 +96,37 @@ describe('monthOf', () => {
     ['2027-01-01', '2027-01'],
   ])('puts %s in %s', (date, month) => {
     expect(monthOf(date)).toBe(month)
+  })
+})
+
+describe('addMonths', () => {
+  it.each([
+    ['2026-10', 1, '2026-11'],
+    ['2026-10', -1, '2026-09'],
+    ['2026-12', 1, '2027-01'],
+    ['2026-01', -1, '2025-12'],
+    ['2026-10', 0, '2026-10'],
+    ['2026-10', 15, '2028-01'],
+    ['2026-10', -22, '2024-12'],
+  ])('moves %s by %i to %s', (month, delta, expected) => {
+    expect(addMonths(month, delta)).toBe(expected)
+  })
+
+  it('throws for an invalid month', () => {
+    expect(() => addMonths('2026-13', 1)).toThrow(RangeError)
+  })
+})
+
+describe('formatMonth', () => {
+  it.each([
+    ['2026-10', 'October 2026'],
+    ['2027-01', 'January 2027'],
+    ['2025-12', 'December 2025'],
+  ])('formats %s as "%s"', (month, text) => {
+    expect(formatMonth(month)).toBe(text)
+  })
+
+  it('throws for an invalid month', () => {
+    expect(() => formatMonth('2026-00')).toThrow(RangeError)
   })
 })

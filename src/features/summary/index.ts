@@ -1,3 +1,4 @@
+export { MonthlySummary } from './components/MonthlySummary'
 export {
   summarizeMonth,
   type CategorySummary,
