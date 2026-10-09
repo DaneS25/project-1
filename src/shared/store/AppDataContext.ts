@@ -18,7 +18,11 @@ export type AppDataContextValue = {
   addCategory: (category: Omit<Category, 'id'>) => boolean
   /** Returns false if the change was invalid or the id unknown. */
   updateCategory: (category: Category) => boolean
-  deleteCategory: (id: Id) => void
+  /**
+   * Returns false if nothing was removed: the id is unknown, or the
+   * category still has transactions.
+   */
+  deleteCategory: (id: Id) => boolean
 }
 
 export const AppDataContext = createContext<AppDataContextValue | null>(null)

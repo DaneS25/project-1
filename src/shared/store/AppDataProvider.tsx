@@ -59,9 +59,7 @@ export function AppDataProvider({
         category: { ...category, id: createId() },
       }),
     updateCategory: (category) => apply({ type: 'categoryUpdated', category }),
-    deleteCategory: (id) => {
-      apply({ type: 'categoryDeleted', id })
-    },
+    deleteCategory: (id) => apply({ type: 'categoryDeleted', id }),
   }
 
   return <AppDataContext value={value}>{children}</AppDataContext>

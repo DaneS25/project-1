@@ -288,6 +288,54 @@ describe('AppDataProvider', () => {
     ).toBeInTheDocument()
   })
 
+  it('reports whether a category was deleted', async () => {
+    const { storage } = createTestStorage()
+    function DeleteResults() {
+      const { data, addTransaction, deleteCategory } = useAppData()
+      const [results, setResults] = useState<boolean[]>([])
+      const [used, unused] = data.categories
+      return (
+        <>
+          <p>Results: {results.join(', ')}</p>
+          <button
+            onClick={() => {
+              if (!used || !unused) return
+              addTransaction({
+                amountCents: 100,
+                date: '2026-10-08',
+                categoryId: used.id,
+              })
+            }}
+          >
+            Use first
+          </button>
+          <button
+            onClick={() => {
+              if (!used || !unused) return
+              setResults([
+                deleteCategory(used.id),
+                deleteCategory(unused.id),
+                deleteCategory('unknown'),
+              ])
+            }}
+          >
+            Delete
+          </button>
+        </>
+      )
+    }
+    render(
+      <AppDataProvider storage={storage} createId={createTestIds()}>
+        <DeleteResults />
+      </AppDataProvider>,
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Use first' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    expect(screen.getByText('Results: false, true, false')).toBeInTheDocument()
+  })
+
   it('ignores deleting a category that still has transactions', async () => {
     const { storage } = createTestStorage()
     renderStore(storage)
