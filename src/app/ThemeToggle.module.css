@@ -1,0 +1,106 @@
+.toggle {
+  display: inline-flex;
+  flex: none;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 3px;
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: 2.25rem;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-text);
+  }
+
+  /* The chosen option is raised, bolder and coloured: not colour alone. */
+  &:has(:checked) {
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+
+    & .icon {
+      color: var(--color-accent-text);
+    }
+  }
+
+  &:has(:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+
+    &:has(:checked) .icon {
+      animation: icon-in var(--dur-base) var(--ease-out);
+    }
+  }
+}
+
+/* Covers the label so clicks land on it, but stays invisible. */
+.input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.iconFill {
+  fill: currentcolor;
+  stroke: none;
+}
+
+/* On narrow screens only the icons show; the words stay for screen readers. */
+@media (width < 34rem) {
+  .label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes icon-in {
+  from {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.6);
+  }
+}

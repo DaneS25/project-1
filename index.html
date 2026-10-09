@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title>Budget</title>
+    <script>
+      // Apply a saved Light or Dark theme before the first paint, so there's
+      // no flash of the wrong theme. The one place storage is read outside
+      // src/shared/storage/; the key and values match theme.ts there.
+      try {
+        var theme = localStorage.getItem('budget-app:theme')
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.dataset.theme = theme
+        }
+      } catch (error) {
+        // Storage is blocked: leave the theme on System.
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

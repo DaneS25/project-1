@@ -1,11 +1,15 @@
 import type { ReactNode } from 'react'
 import styles from './AppShell.module.css'
+import { ThemeToggle } from './ThemeToggle'
 
 type AppShellProps = {
   children: ReactNode
 }
 
-/** Top-level page layout: sticky header with the app name, then main content. */
+/**
+ * Top-level page layout: sticky header with the app name and theme choice,
+ * then main content.
+ */
 export function AppShell({ children }: AppShellProps) {
   return (
     <div className={styles.shell}>
@@ -28,6 +32,9 @@ export function AppShell({ children }: AppShellProps) {
             <p className={styles.tagline}>
               Track spending against your monthly budgets
             </p>
+          </div>
+          <div className={styles.headerEnd}>
+            <ThemeToggle />
           </div>
         </div>
       </header>
