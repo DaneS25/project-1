@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isIsoDate, toIsoDate } from './dates'
+import { formatIsoDate, isIsoDate, toIsoDate } from './dates'
 
 describe('isIsoDate', () => {
   it.each([
@@ -38,5 +38,23 @@ describe('toIsoDate', () => {
 
   it('produces a date that isIsoDate accepts', () => {
     expect(isIsoDate(toIsoDate(new Date(2024, 1, 29)))).toBe(true)
+  })
+})
+
+describe('formatIsoDate', () => {
+  it('shows the same calendar day that was stored', () => {
+    expect(formatIsoDate('2026-10-09')).toMatch(/9 Oct 2026/)
+  })
+
+  it('includes the weekday', () => {
+    expect(formatIsoDate('2026-10-09')).toMatch(/^Fri/)
+  })
+
+  it('handles the first day of the year', () => {
+    expect(formatIsoDate('2026-01-01')).toMatch(/1 Jan 2026/)
+  })
+
+  it('throws for a value that is not a real date', () => {
+    expect(() => formatIsoDate('2026-02-30')).toThrow(RangeError)
   })
 })

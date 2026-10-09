@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { AppShell } from '@/app/AppShell'
 import { ErrorBoundary } from '@/app/ErrorBoundary'
 import { StorageNotice } from '@/app/StorageNotice'
-import { TransactionForm } from '@/features/transactions'
+import { TransactionForm, TransactionList } from '@/features/transactions'
 import { EmptyState } from '@/shared/components/EmptyState'
 import { Panel } from '@/shared/components/Panel'
 import { toIsoDate } from '@/shared/lib/dates'
@@ -38,10 +38,7 @@ export function App({ today: fixedToday }: AppProps) {
               />
             </Panel>
             <Panel title="Transactions" description="Newest first">
-              <EmptyState
-                title="No transactions yet"
-                description="Transactions you add will appear here."
-              />
+              <TransactionList />
             </Panel>
           </div>
         </AppShell>

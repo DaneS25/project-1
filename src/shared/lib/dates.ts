@@ -35,3 +35,25 @@ export function toIsoDate(date: Date): IsoDate {
   const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
 }
+
+const displayDate = new Intl.DateTimeFormat('en-NZ', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+})
+
+/**
+ * Formats a `YYYY-MM-DD` date for display, e.g. "Fri, 9 Oct 2026". Builds
+ * the `Date` from numeric parts in local time; `new Date('2026-10-09')` is
+ * read as UTC and can show the wrong day in New Zealand.
+ */
+export function formatIsoDate(date: IsoDate): string {
+  const match = ISO_DATE_PATTERN.exec(date)
+  if (!match || !isIsoDate(date)) {
+    throw new RangeError(`Expected a YYYY-MM-DD date, got "${date}"`)
+  }
+  return displayDate.format(
+    new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])),
+  )
+}
