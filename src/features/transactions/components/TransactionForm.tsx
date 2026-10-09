@@ -1,4 +1,5 @@
 import { useState, type SubmitEvent } from 'react'
+import { Button } from '@/shared/components/Button'
 import { EmptyState } from '@/shared/components/EmptyState'
 import { formatCents } from '@/shared/lib/money'
 import { useAppData } from '@/shared/store/AppDataContext'
@@ -83,9 +84,9 @@ export function TransactionForm({ today }: TransactionFormProps) {
         onChange={handleChange}
       />
       <div className={styles.actions}>
-        <button className={styles.submit} type="submit">
+        <Button variant="primary" type="submit">
           Add transaction
-        </button>
+        </Button>
         <p className={styles.status} role="status">
           {outcome.kind === 'added' && outcome.message}
         </p>

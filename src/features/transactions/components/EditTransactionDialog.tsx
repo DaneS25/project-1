@@ -1,4 +1,5 @@
 import { useId, useState, type SubmitEvent } from 'react'
+import { Button } from '@/shared/components/Button'
 import { centsToAmountInput } from '@/shared/lib/money'
 import { useAppData } from '@/shared/store/AppDataContext'
 import type { Transaction } from '@/shared/types'
@@ -84,18 +85,18 @@ export function EditTransactionDialog({
           </p>
         )}
         <div className={formStyles.actions}>
-          <button className={formStyles.submit} type="submit">
+          <Button variant="primary" type="submit">
             Save changes
-          </button>
-          <button
-            className={formStyles.secondary}
+          </Button>
+          <Button
+            variant="secondary"
             type="button"
             onClick={() => {
               closeThen(onCancel)
             }}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </dialog>

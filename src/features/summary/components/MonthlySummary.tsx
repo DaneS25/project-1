@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Button } from '@/shared/components/Button'
 import { EmptyState } from '@/shared/components/EmptyState'
 import { compareCategoryNames } from '@/shared/lib/categories'
 import { addMonths, formatMonth, monthOf } from '@/shared/lib/dates'
@@ -30,7 +31,8 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
   return (
     <div className={styles.summary}>
       <div className={styles.nav}>
-        <button
+        <Button
+          variant="outline"
           className={styles.navButton}
           type="button"
           aria-label={`Previous month, ${formatMonth(previous)}`}
@@ -39,11 +41,12 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
           }}
         >
           <span aria-hidden="true">‹</span> Previous
-        </button>
+        </Button>
         <p className={styles.month} role="status">
           {formatMonth(month)}
         </p>
-        <button
+        <Button
+          variant="outline"
           className={styles.navButton}
           type="button"
           aria-label={`Next month, ${formatMonth(next)}`}
@@ -52,10 +55,12 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
           }}
         >
           Next <span aria-hidden="true">›</span>
-        </button>
+        </Button>
       </div>
       {month !== currentMonth && (
-        <button
+        <Button
+          variant="outline"
+          size="small"
           className={styles.todayButton}
           type="button"
           onClick={() => {
@@ -63,7 +68,7 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
           }}
         >
           Back to this month
-        </button>
+        </Button>
       )}
       {/* Keyed by month so the content fades in again on a change. */}
       <div key={month} className={styles.content}>

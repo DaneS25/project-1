@@ -1,4 +1,5 @@
 import { formatIsoDate } from '@/shared/lib/dates'
+import { Button } from '@/shared/components/Button'
 import { formatCents } from '@/shared/lib/money'
 import type { Transaction } from '@/shared/types'
 import styles from './TransactionList.module.css'
@@ -39,24 +40,26 @@ export function TransactionRow({
       <div className={styles.side}>
         <p className={styles.amount}>{amount}</p>
         <div className={styles.rowActions}>
-          <button
+          <Button
             ref={editButtonRef}
-            className={styles.rowButton}
+            variant="outline"
+            size="small"
             type="button"
             aria-label={`Edit ${description}`}
             onClick={onEdit}
           >
             Edit
-          </button>
-          <button
+          </Button>
+          <Button
             ref={deleteButtonRef}
-            className={[styles.rowButton, styles.deleteButton].join(' ')}
+            variant="outline-danger"
+            size="small"
             type="button"
             aria-label={`Delete ${description}`}
             onClick={onDelete}
           >
             Delete
-          </button>
+          </Button>
         </div>
       </div>
     </li>

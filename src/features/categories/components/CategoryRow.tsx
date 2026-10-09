@@ -1,4 +1,5 @@
 import type { Category } from '@/shared/types'
+import { Button } from '@/shared/components/Button'
 import { budgetLabel } from '../logic/budgetText'
 import { transactionCountLabel } from '../logic/usage'
 import styles from './CategoryList.module.css'
@@ -36,24 +37,26 @@ export function CategoryRow({
         </p>
       </div>
       <div className={styles.rowActions}>
-        <button
+        <Button
           ref={editButtonRef}
-          className={styles.rowButton}
+          variant="outline"
+          size="small"
           type="button"
           aria-label={`Edit ${description}`}
           onClick={onEdit}
         >
           Edit
-        </button>
-        <button
+        </Button>
+        <Button
           ref={deleteButtonRef}
-          className={[styles.rowButton, styles.deleteButton].join(' ')}
+          variant="outline-danger"
+          size="small"
           type="button"
           aria-label={`Delete ${description}`}
           onClick={onDelete}
         >
           Delete
-        </button>
+        </Button>
       </div>
     </li>
   )

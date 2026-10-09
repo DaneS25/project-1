@@ -1,0 +1,144 @@
+.button {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  overflow: hidden;
+  font-weight: var(--weight-semibold);
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
+
+    /* Lift on pointer hover only, so a tap doesn't leave a button raised. */
+    @media (hover: hover) {
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+    }
+
+    &:active {
+      transform: scale(0.97);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}
+
+.regular {
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+}
+
+.small {
+  min-block-size: 2rem;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-sm);
+}
+
+/*
+ * Primary: the gradient is drawn on a wider layer behind the label and
+ * slides along on hover (transform only). At rest it shows dusk blue to
+ * burnt orange; on hover it moves on towards a faint peach glint. The text
+ * measured at least 4.8:1 (light) and 8.5:1 (dark) everywhere on it.
+ */
+.primary {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-sm);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: -1;
+    inline-size: 150%;
+    background: var(--gradient-accent-shift);
+  }
+
+  @media (hover: hover) {
+    /* A 10% wash of the text colour: darker in light, lighter in dark. */
+    &:hover::before {
+      background:
+        linear-gradient(
+          color-mix(in oklch, var(--color-text) 10%, transparent),
+          color-mix(in oklch, var(--color-text) 10%, transparent)
+        ),
+        var(--gradient-accent-shift);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &::before {
+      transition: transform var(--dur-slow) var(--ease-in-out);
+    }
+
+    @media (hover: hover) {
+      &:hover::before {
+        transform: translateX(-33.333%);
+      }
+    }
+  }
+}
+
+.secondary {
+  color: var(--color-text);
+  background: var(--color-surface);
+  border-color: var(--color-border);
+
+  @media (hover: hover) {
+    &:hover {
+      background: var(--color-surface-sunken);
+    }
+  }
+}
+
+.danger {
+  color: var(--color-on-accent);
+  background: var(--color-danger);
+  box-shadow: var(--shadow-sm);
+
+  @media (hover: hover) {
+    &:hover {
+      background: color-mix(
+        in oklch,
+        var(--color-danger) 88%,
+        var(--color-text)
+      );
+    }
+  }
+}
+
+.outline {
+  color: var(--color-accent-text);
+  background: transparent;
+  border-color: var(--color-border);
+
+  @media (hover: hover) {
+    &:hover {
+      background: var(--color-accent-soft);
+    }
+  }
+}
+
+.outline-danger {
+  color: var(--color-danger);
+  background: transparent;
+  border-color: var(--color-border);
+
+  @media (hover: hover) {
+    &:hover {
+      background: color-mix(in oklch, var(--color-danger) 10%, transparent);
+    }
+  }
+}
