@@ -1,4 +1,5 @@
 import { parseAppData } from '@/shared/storage/validate'
+import { isCategoryNameTaken } from '@/shared/lib/categories'
 import type { AppData, Category, Id, Transaction } from '@/shared/types'
 
 export type AppDataAction =
@@ -13,12 +14,30 @@ export type AppDataAction =
  * Applies an action to the app data. Forms validate first; as a backstop,
  * any action that would produce invalid data (bad amount or date, duplicate
  * id, a transaction left pointing at a deleted category, an update for an
- * unknown id) is ignored and the current state is returned unchanged.
+ * unknown id, a category name that isn't trimmed or is already used) is
+ * ignored and the current state is returned unchanged.
  */
 export function appDataReducer(state: AppData, action: AppDataAction): AppData {
+  if (
+    (action.type === 'categoryAdded' || action.type === 'categoryUpdated') &&
+    !isValidCategoryName(state, action.category)
+  ) {
+    return state
+  }
   const next = applyAction(state, action)
   if (next === state) return state
   return parseAppData(next).ok ? next : state
+}
+
+/**
+ * Checked only when a category is added or renamed, not on load, so data
+ * saved before names were unique still loads.
+ */
+function isValidCategoryName(state: AppData, category: Category): boolean {
+  return (
+    category.name === category.name.trim() &&
+    !isCategoryNameTaken(state.categories, category.name, category.id)
+  )
 }
 
 function applyAction(state: AppData, action: AppDataAction): AppData {

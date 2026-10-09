@@ -121,6 +121,49 @@ describe('appDataReducer', () => {
     expect(appDataReducer(state, action)).toBe(state)
   })
 
+  it.each([
+    ['the same name', 'Rent'],
+    ['a name differing only in case', 'rent'],
+  ])('ignores adding a category with %s as another', (_label, name) => {
+    const action = {
+      type: 'categoryAdded',
+      category: { id: 'c3', name, monthlyBudgetCents: 0 },
+    } as const
+
+    expect(appDataReducer(state, action)).toBe(state)
+  })
+
+  it('ignores renaming a category to another category’s name', () => {
+    const action = {
+      type: 'categoryUpdated',
+      category: { id: 'c1', name: 'RENT', monthlyBudgetCents: 0 },
+    } as const
+
+    expect(appDataReducer(state, action)).toBe(state)
+  })
+
+  it('ignores a category name with surrounding spaces', () => {
+    const action = {
+      type: 'categoryAdded',
+      category: { id: 'c3', name: ' Fuel ', monthlyBudgetCents: 0 },
+    } as const
+
+    expect(appDataReducer(state, action)).toBe(state)
+  })
+
+  it('allows keeping a category’s own name while changing its budget', () => {
+    const next = appDataReducer(state, {
+      type: 'categoryUpdated',
+      category: { id: 'c1', name: 'Groceries', monthlyBudgetCents: 70000 },
+    })
+
+    expect(next.categories[0]).toEqual({
+      id: 'c1',
+      name: 'Groceries',
+      monthlyBudgetCents: 70000,
+    })
+  })
+
   it('allows deleting a category with no transactions', () => {
     const next = appDataReducer(state, { type: 'categoryDeleted', id: 'c2' })
 

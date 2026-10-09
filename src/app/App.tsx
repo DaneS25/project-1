@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AppShell } from '@/app/AppShell'
 import { ErrorBoundary } from '@/app/ErrorBoundary'
 import { StorageNotice } from '@/app/StorageNotice'
+import { CategoryForm, CategoryList } from '@/features/categories'
 import { TransactionForm, TransactionList } from '@/features/transactions'
 import { EmptyState } from '@/shared/components/EmptyState'
 import { Panel } from '@/shared/components/Panel'
@@ -39,6 +40,13 @@ export function App({ today: fixedToday }: AppProps) {
             </Panel>
             <Panel title="Transactions" description="Newest first">
               <TransactionList />
+            </Panel>
+            <Panel
+              title="Categories"
+              description="Monthly budgets, sorted by name"
+            >
+              <CategoryForm />
+              <CategoryList />
             </Panel>
           </div>
         </AppShell>

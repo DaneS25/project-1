@@ -1,12 +1,12 @@
 import { useId } from 'react'
 import type { Category } from '@/shared/types'
-import type { TransactionDraftState } from '../hooks/useTransactionDraft'
+import type { FormDraft } from '@/shared/hooks/useFormDraft'
 import type { DraftField, TransactionDraft } from '../logic/transactionDraft'
-import { FormField } from './FormField'
-import styles from './TransactionForm.module.css'
+import { FormField } from '@/shared/components/FormField'
+import styles from '@/shared/components/Form.module.css'
 
 type TransactionFieldsProps = {
-  form: TransactionDraftState
+  form: FormDraft<TransactionDraft>
   categories: readonly Category[]
   onChange: (field: keyof TransactionDraft, value: string) => void
 }
@@ -18,7 +18,7 @@ export function TransactionFields({
   onChange,
 }: TransactionFieldsProps) {
   const id = useId()
-  const { draft, errors, amountRef, dateRef, categoryRef } = form
+  const { draft, errors, register } = form
 
   function describedBy(field: DraftField) {
     return errors[field] ? `${id}-${field}-error` : undefined
@@ -37,7 +37,7 @@ export function TransactionFields({
             $
           </span>
           <input
-            ref={amountRef}
+            ref={register('amount')}
             id={`${id}-amount`}
             className={styles.control}
             type="text"
@@ -60,7 +60,7 @@ export function TransactionFields({
         error={errors.date}
       >
         <input
-          ref={dateRef}
+          ref={register('date')}
           id={`${id}-date`}
           className={styles.control}
           type="date"
@@ -79,7 +79,7 @@ export function TransactionFields({
         error={errors.categoryId}
       >
         <select
-          ref={categoryRef}
+          ref={register('categoryId')}
           id={`${id}-category`}
           className={styles.control}
           value={draft.categoryId}

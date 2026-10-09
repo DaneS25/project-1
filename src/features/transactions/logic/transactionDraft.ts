@@ -15,12 +15,6 @@ export type DraftField = 'amount' | 'date' | 'categoryId'
 /** An error message per invalid field, in the order the fields appear. */
 export type DraftErrors = Partial<Record<DraftField, string | undefined>>
 
-export const DRAFT_FIELDS: readonly DraftField[] = [
-  'amount',
-  'date',
-  'categoryId',
-]
-
 /**
  * Checks a draft and turns it into a transaction ready to add (without an
  * id). Amount must be more than zero, date must be a real `YYYY-MM-DD` date

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import styles from './TransactionForm.module.css'
+import styles from './Form.module.css'
 
 type FormFieldProps = {
   label: string
@@ -10,6 +10,8 @@ type FormFieldProps = {
   error: string | undefined
   /** Shown after the label, e.g. "optional". */
   labelSuffix?: string
+  /** Help text under the control; the control should point at `hint.id`. */
+  hint?: { id: string; text: string }
   children: ReactNode
 }
 
@@ -20,6 +22,7 @@ export function FormField({
   errorId,
   error,
   labelSuffix,
+  hint,
   children,
 }: FormFieldProps) {
   return (
@@ -31,6 +34,11 @@ export function FormField({
         )}
       </label>
       {children}
+      {hint && (
+        <p id={hint.id} className={styles.hint}>
+          {hint.text}
+        </p>
+      )}
       {error && (
         <p id={errorId} className={styles.error} role="alert">
           <svg

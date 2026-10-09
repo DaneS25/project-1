@@ -250,6 +250,44 @@ describe('AppDataProvider', () => {
     expect(screen.getByText('Results: true, false')).toBeInTheDocument()
   })
 
+  it('reports whether a category was added or updated', async () => {
+    const { storage } = createTestStorage()
+    function CategoryResults() {
+      const { data, addCategory, updateCategory } = useAppData()
+      const [results, setResults] = useState<boolean[]>([])
+      const first = data.categories[0]
+      return (
+        <>
+          <p>Results: {results.join(', ')}</p>
+          <button
+            onClick={() => {
+              if (!first) return
+              setResults([
+                addCategory({ name: 'Fuel', monthlyBudgetCents: 5000 }),
+                addCategory({ name: 'fuel', monthlyBudgetCents: 0 }),
+                updateCategory({ ...first, monthlyBudgetCents: 40000 }),
+                updateCategory({ ...first, id: 'unknown' }),
+              ])
+            }}
+          >
+            Change
+          </button>
+        </>
+      )
+    }
+    render(
+      <AppDataProvider storage={storage} createId={createTestIds()}>
+        <CategoryResults />
+      </AppDataProvider>,
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Change' }))
+
+    expect(
+      screen.getByText('Results: true, false, true, false'),
+    ).toBeInTheDocument()
+  })
+
   it('ignores deleting a category that still has transactions', async () => {
     const { storage } = createTestStorage()
     renderStore(storage)

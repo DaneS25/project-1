@@ -3,9 +3,9 @@ import { formatIsoDate } from '@/shared/lib/dates'
 import { formatCents } from '@/shared/lib/money'
 import { useAppData } from '@/shared/store/AppDataContext'
 import type { Transaction } from '@/shared/types'
-import { useModalDialog } from '../hooks/useModalDialog'
-import styles from './Dialog.module.css'
-import formStyles from './TransactionForm.module.css'
+import { useModalDialog } from '@/shared/hooks/useModalDialog'
+import styles from '@/shared/components/Dialog.module.css'
+import formStyles from '@/shared/components/Form.module.css'
 
 type DeleteTransactionDialogProps = {
   transaction: Transaction
