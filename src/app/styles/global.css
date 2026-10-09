@@ -22,13 +22,8 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--color-text);
-  background:
-    radial-gradient(
-      60rem 32rem at 15% -12rem,
-      var(--color-glow),
-      transparent 70%
-    ),
-    var(--color-bg);
+  background-color: var(--color-bg);
+  background-image: var(--gradient-page-wash);
 }
 
 h1,

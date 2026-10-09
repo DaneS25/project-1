@@ -23,7 +23,13 @@ export function AppShell({ children }: AppShellProps) {
             aria-hidden="true"
             focusable="false"
           >
-            <rect className={styles.logoTile} width="32" height="32" rx="9" />
+            <defs>
+              <linearGradient id="logo-sunset" x1="0" y1="0" x2="1" y2="1">
+                <stop className={styles.logoStart} offset="0" />
+                <stop className={styles.logoEnd} offset="1" />
+              </linearGradient>
+            </defs>
+            <rect width="32" height="32" rx="9" fill="url(#logo-sunset)" />
             <circle className={styles.logoTrack} cx="16" cy="16" r="8" />
             <path className={styles.logoArc} d="M16 8a8 8 0 0 1 7.6 10.5" />
           </svg>
