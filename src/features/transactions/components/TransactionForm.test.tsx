@@ -1,10 +1,11 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CURRENT_VERSION } from '@/shared/storage/migrations'
 import { STORAGE_KEY, type StorageLike } from '@/shared/storage/storage'
 import { AppDataProvider } from '@/shared/store/AppDataProvider'
 import { createTestIds, createTestStorage } from '@/shared/store/testStorage'
+import { FLOURISH_MS } from '../hooks/useFlourish'
 import { TransactionForm } from './TransactionForm'
 
 const TODAY = '2026-10-09'
@@ -157,5 +158,69 @@ describe('TransactionForm', () => {
     expect(
       screen.queryByRole('button', { name: 'Add transaction' }),
     ).not.toBeInTheDocument()
+  })
+})
+
+describe('success flourish on the Add button', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  const addButton = () =>
+    screen.getByRole('button', { name: 'Add transaction' })
+  // The check is decorative (aria-hidden), so look at its state directly.
+  const isShowingCheck = () => addButton().querySelector('[data-done]') !== null
+
+  async function addOne() {
+    await userEvent.type(amountInput(), '12.50')
+    await userEvent.selectOptions(categorySelect(), 'Groceries')
+    await submit()
+  }
+
+  it('shows a check after a successful add, then brings the label back', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    renderForm()
+
+    await addOne()
+    expect(isShowingCheck()).toBe(true)
+
+    vi.advanceTimersByTime(FLOURISH_MS)
+    await vi.waitFor(() => {
+      expect(isShowingCheck()).toBe(false)
+    })
+  })
+
+  it('keeps the button name and leaves the announcement to the status message', async () => {
+    renderForm()
+
+    await addOne()
+
+    expect(addButton()).toHaveTextContent('Add transaction')
+    expect(addButton()).toHaveAccessibleName('Add transaction')
+    expect(screen.getAllByRole('status')).toHaveLength(1)
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'Added $12.50 to Groceries.',
+    )
+  })
+
+  it('restarts the timer for a quick second add', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    renderForm()
+    await addOne()
+
+    vi.advanceTimersByTime(FLOURISH_MS - 200)
+    await userEvent.type(amountInput(), '3')
+    await submit()
+    vi.advanceTimersByTime(400)
+
+    expect(isShowingCheck()).toBe(true)
+  })
+
+  it('shows no check when the add fails validation', async () => {
+    renderForm()
+
+    await submit()
+
+    expect(isShowingCheck()).toBe(false)
   })
 })
