@@ -1,9 +1,10 @@
-import { useEffect, useId, useRef, useState, type SubmitEvent } from 'react'
+import { useId, useState, type SubmitEvent } from 'react'
 import { centsToAmountInput } from '@/shared/lib/money'
 import { useAppData } from '@/shared/store/AppDataContext'
 import type { Transaction } from '@/shared/types'
 import { useTransactionDraft } from '../hooks/useTransactionDraft'
-import styles from './EditTransactionDialog.module.css'
+import { useModalDialog } from '../hooks/useModalDialog'
+import styles from './Dialog.module.css'
 import formStyles from './TransactionForm.module.css'
 import { TransactionFields } from './TransactionFields'
 
@@ -32,25 +33,8 @@ export function EditTransactionDialog({
     note: transaction.note ?? '',
   })
   const [isRejected, setIsRejected] = useState(false)
-  const dialogRef = useRef<HTMLDialogElement>(null)
+  const { dialogRef, closeThen } = useModalDialog()
   const headingId = useId()
-
-  // An allowed effect: opening a modal dialog is only possible through the
-  // DOM API. The dialog is mounted only while editing, and the cleanup
-  // closes it, which also handles StrictMode running the effect twice.
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (!dialog) return
-    dialog.showModal()
-    return () => {
-      dialog.close()
-    }
-  }, [])
-
-  function finish(notify: () => void) {
-    dialogRef.current?.close()
-    notify()
-  }
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -62,7 +46,7 @@ export function EditTransactionDialog({
       setIsRejected(true)
       return
     }
-    finish(() => {
+    closeThen(() => {
       onSave(updated)
     })
   }
@@ -75,7 +59,7 @@ export function EditTransactionDialog({
       onCancel={(event) => {
         // Escape: close through the same path as the Cancel button.
         event.preventDefault()
-        finish(onCancel)
+        closeThen(onCancel)
       }}
     >
       <form className={formStyles.form} noValidate onSubmit={handleSubmit}>
@@ -101,7 +85,7 @@ export function EditTransactionDialog({
             className={formStyles.secondary}
             type="button"
             onClick={() => {
-              finish(onCancel)
+              closeThen(onCancel)
             }}
           >
             Cancel

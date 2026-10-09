@@ -52,9 +52,7 @@ export function AppDataProvider({
       }),
     updateTransaction: (transaction) =>
       apply({ type: 'transactionUpdated', transaction }),
-    deleteTransaction: (id) => {
-      apply({ type: 'transactionDeleted', id })
-    },
+    deleteTransaction: (id) => apply({ type: 'transactionDeleted', id }),
     addCategory: (category) => {
       apply({
         type: 'categoryAdded',

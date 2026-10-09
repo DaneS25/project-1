@@ -12,7 +12,8 @@ export type AppDataContextValue = {
   addTransaction: (transaction: Omit<Transaction, 'id'>) => boolean
   /** Returns false if the change was invalid (or the id unknown) and nothing changed. */
   updateTransaction: (transaction: Transaction) => boolean
-  deleteTransaction: (id: Id) => void
+  /** Returns false if no transaction has that id and nothing was removed. */
+  deleteTransaction: (id: Id) => boolean
   addCategory: (category: Omit<Category, 'id'>) => void
   updateCategory: (category: Category) => void
   deleteCategory: (id: Id) => void
