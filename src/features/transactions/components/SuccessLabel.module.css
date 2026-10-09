@@ -1,0 +1,74 @@
+/*
+ * The label and the check share one spot. Only opacity and transform
+ * change, and only with motion allowed; with reduced motion the check
+ * simply appears and disappears.
+ */
+.wrap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.label,
+.check {
+  grid-area: 1 / 1;
+}
+
+.check {
+  position: relative;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.6);
+  pointer-events: none;
+}
+
+/* A soft glint-coloured glow behind the check. */
+.glow {
+  position: absolute;
+  inline-size: 2.75rem;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle,
+    var(--color-accent-glint),
+    transparent 70%
+  );
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.icon {
+  position: relative;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wrap[data-done] {
+  & .label {
+    opacity: 0;
+  }
+
+  & .check {
+    opacity: 1;
+    transform: none;
+  }
+
+  & .glow {
+    opacity: 0.9;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .label,
+  .check,
+  .glow {
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+}

@@ -9,6 +9,8 @@ import {
   validateTransactionDraft,
   type TransactionDraft,
 } from '../logic/transactionDraft'
+import { useFlourish } from '../hooks/useFlourish'
+import { SuccessLabel } from './SuccessLabel'
 import { TransactionFields } from './TransactionFields'
 import styles from '@/shared/components/Form.module.css'
 
@@ -24,6 +26,7 @@ type Outcome =
  * Form for adding an expense. Draft values stay local until a valid submit;
  * after an add, the amount and note are cleared but the date and category
  * are kept, since several expenses are often entered for the same day.
+ * A successful add also briefly shows a check on the Add button.
  */
 export function TransactionForm({ today }: TransactionFormProps) {
   const { data, addTransaction } = useAppData()
@@ -34,6 +37,7 @@ export function TransactionForm({ today }: TransactionFormProps) {
     note: '',
   })
   const [outcome, setOutcome] = useState<Outcome>({ kind: 'idle' })
+  const flourish = useFlourish()
 
   if (data.categories.length === 0) {
     return (
@@ -73,6 +77,7 @@ export function TransactionForm({ today }: TransactionFormProps) {
       kind: 'added',
       message: `Added ${formatCents(transaction.amountCents)} to ${category?.name ?? 'the category'}.`,
     })
+    flourish.start()
     form.focus('amount')
   }
 
@@ -85,7 +90,7 @@ export function TransactionForm({ today }: TransactionFormProps) {
       />
       <div className={styles.actions}>
         <Button variant="primary" type="submit">
-          Add transaction
+          <SuccessLabel label="Add transaction" isDone={flourish.isShowing} />
         </Button>
         <p className={styles.status} role="status">
           {outcome.kind === 'added' && outcome.message}
