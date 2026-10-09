@@ -62,3 +62,41 @@
     transform: translateY(-0.25rem);
   }
 }
+
+.status {
+  /* Never display: none, or screen readers can miss the announcement. */
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-success);
+
+  &:not(:empty) {
+    margin-block-end: var(--space-4);
+  }
+}
+
+.side {
+  display: grid;
+  flex: none;
+  justify-items: end;
+  gap: var(--space-2);
+}
+
+.edit {
+  min-block-size: 2rem;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent-text);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-accent-soft);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color var(--dur-fast) var(--ease-out);
+  }
+}
