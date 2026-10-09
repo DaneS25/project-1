@@ -162,3 +162,8 @@
     transition: background-color var(--dur-fast) var(--ease-out);
   }
 }
+
+.hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

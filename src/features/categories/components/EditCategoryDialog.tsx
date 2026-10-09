@@ -1,40 +1,39 @@
 import { useId, useState, type SubmitEvent } from 'react'
+import dialogStyles from '@/shared/components/Dialog.module.css'
+import formStyles from '@/shared/components/Form.module.css'
+import { useFormDraft } from '@/shared/hooks/useFormDraft'
+import { useModalDialog } from '@/shared/hooks/useModalDialog'
 import { centsToAmountInput } from '@/shared/lib/money'
 import { useAppData } from '@/shared/store/AppDataContext'
-import type { Transaction } from '@/shared/types'
-import { useFormDraft } from '@/shared/hooks/useFormDraft'
+import type { Category } from '@/shared/types'
 import {
-  validateTransactionDraft,
-  type TransactionDraft,
-} from '../logic/transactionDraft'
-import { useModalDialog } from '@/shared/hooks/useModalDialog'
-import styles from '@/shared/components/Dialog.module.css'
-import formStyles from '@/shared/components/Form.module.css'
-import { TransactionFields } from './TransactionFields'
+  validateCategoryDraft,
+  type CategoryDraft,
+} from '../logic/categoryDraft'
+import { CategoryFields } from './CategoryFields'
 
-type EditTransactionDialogProps = {
-  transaction: Transaction
-  onSave: (transaction: Transaction) => void
+type EditCategoryDialogProps = {
+  category: Category
+  onSave: (category: Category) => void
   onCancel: () => void
 }
 
 /**
- * A modal form, pre-filled with a transaction, for changing it. Uses the
- * native <dialog>, which traps focus while open and puts it on the first
- * field. The dialog closes itself before telling the parent, so focus can
- * go back to the page.
+ * A modal form for renaming a category or changing its budget. A budget
+ * of zero shows as a blank field, matching "leave blank for no budget".
  */
-export function EditTransactionDialog({
-  transaction,
+export function EditCategoryDialog({
+  category,
   onSave,
   onCancel,
-}: EditTransactionDialogProps) {
-  const { data, updateTransaction } = useAppData()
-  const form = useFormDraft<TransactionDraft>({
-    amount: centsToAmountInput(transaction.amountCents),
-    date: transaction.date,
-    categoryId: transaction.categoryId,
-    note: transaction.note ?? '',
+}: EditCategoryDialogProps) {
+  const { data, updateCategory } = useAppData()
+  const form = useFormDraft<CategoryDraft>({
+    name: category.name,
+    budget:
+      category.monthlyBudgetCents === 0
+        ? ''
+        : centsToAmountInput(category.monthlyBudgetCents),
   })
   const [isRejected, setIsRejected] = useState(false)
   const { dialogRef, closeThen } = useModalDialog()
@@ -44,11 +43,11 @@ export function EditTransactionDialog({
     event.preventDefault()
     setIsRejected(false)
     const changes = form.check((draft) =>
-      validateTransactionDraft(draft, data.categories),
+      validateCategoryDraft(draft, data.categories, category.id),
     )
     if (!changes) return
-    const updated = { id: transaction.id, ...changes }
-    if (!updateTransaction(updated)) {
+    const updated = { id: category.id, ...changes }
+    if (!updateCategory(updated)) {
       setIsRejected(true)
       return
     }
@@ -60,7 +59,7 @@ export function EditTransactionDialog({
   return (
     <dialog
       ref={dialogRef}
-      className={styles.dialog}
+      className={dialogStyles.dialog}
       aria-labelledby={headingId}
       onCancel={(event) => {
         // Escape: close through the same path as the Cancel button.
@@ -69,14 +68,10 @@ export function EditTransactionDialog({
       }}
     >
       <form className={formStyles.form} noValidate onSubmit={handleSubmit}>
-        <h2 id={headingId} className={styles.title}>
-          Edit transaction
+        <h2 id={headingId} className={dialogStyles.title}>
+          Edit category
         </h2>
-        <TransactionFields
-          form={form}
-          categories={data.categories}
-          onChange={form.change}
-        />
+        <CategoryFields form={form} onChange={form.change} />
         {isRejected && (
           <p className={formStyles.formError} role="alert">
             These changes couldn&apos;t be saved. Check the details and try

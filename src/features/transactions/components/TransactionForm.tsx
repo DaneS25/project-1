@@ -3,10 +3,13 @@ import { EmptyState } from '@/shared/components/EmptyState'
 import { formatCents } from '@/shared/lib/money'
 import { useAppData } from '@/shared/store/AppDataContext'
 import type { IsoDate } from '@/shared/types'
-import { useTransactionDraft } from '../hooks/useTransactionDraft'
-import type { TransactionDraft } from '../logic/transactionDraft'
+import { useFormDraft } from '@/shared/hooks/useFormDraft'
+import {
+  validateTransactionDraft,
+  type TransactionDraft,
+} from '../logic/transactionDraft'
 import { TransactionFields } from './TransactionFields'
-import styles from './TransactionForm.module.css'
+import styles from '@/shared/components/Form.module.css'
 
 type TransactionFormProps = {
   /** The date the form starts with. Passed in so tests are deterministic. */
@@ -23,7 +26,7 @@ type Outcome =
  */
 export function TransactionForm({ today }: TransactionFormProps) {
   const { data, addTransaction } = useAppData()
-  const form = useTransactionDraft({
+  const form = useFormDraft<TransactionDraft>({
     amount: '',
     date: today,
     categoryId: '',
@@ -50,7 +53,9 @@ export function TransactionForm({ today }: TransactionFormProps) {
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
-    const transaction = form.validate(data.categories)
+    const transaction = form.check((draft) =>
+      validateTransactionDraft(draft, data.categories),
+    )
     if (!transaction) {
       setOutcome({ kind: 'idle' })
       return
@@ -67,7 +72,7 @@ export function TransactionForm({ today }: TransactionFormProps) {
       kind: 'added',
       message: `Added ${formatCents(transaction.amountCents)} to ${category?.name ?? 'the category'}.`,
     })
-    form.amountRef.current?.focus()
+    form.focus('amount')
   }
 
   return (

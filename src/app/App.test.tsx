@@ -78,4 +78,33 @@ describe('App', () => {
       /Transport.*9 Oct 2026.*\$40\.00/,
     )
   })
+
+  it('offers a new category in the transaction form and follows a rename', async () => {
+    render(<App today="2026-10-09" />)
+    const categories = within(
+      screen.getByRole('region', { name: 'Categories' }),
+    )
+    const transactionCategory = within(
+      screen.getByRole('region', { name: 'Add a transaction' }),
+    ).getByLabelText('Category')
+
+    await userEvent.type(categories.getByLabelText('Name'), 'Fuel')
+    await userEvent.click(
+      categories.getByRole('button', { name: 'Add category' }),
+    )
+    await userEvent.selectOptions(transactionCategory, 'Fuel')
+
+    await userEvent.click(
+      categories.getByRole('button', { name: 'Edit Fuel, No budget set' }),
+    )
+    const dialog = within(screen.getByRole('dialog', { name: 'Edit category' }))
+    await userEvent.clear(dialog.getByLabelText('Name'))
+    await userEvent.type(dialog.getByLabelText('Name'), 'Petrol')
+    await userEvent.click(dialog.getByRole('button', { name: 'Save changes' }))
+
+    expect(transactionCategory).toHaveDisplayValue('Petrol')
+    expect(
+      within(transactionCategory).queryByRole('option', { name: 'Fuel' }),
+    ).not.toBeInTheDocument()
+  })
 })
