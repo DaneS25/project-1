@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CURRENT_VERSION } from '@/shared/storage/migrations'
 import { STORAGE_KEY } from '@/shared/storage/storage'
 import { AppDataProvider } from '@/shared/store/AppDataProvider'
@@ -234,5 +234,77 @@ describe('MonthlySummary', () => {
 
       expect(bar('gifts')).toBeNull()
     })
+  })
+})
+
+describe('month switching with view transitions', () => {
+  // jsdom has neither the View Transitions API nor matchMedia, so the
+  // other tests take the plain path. Stub both to take the animated one.
+  const startViewTransition = vi.fn((update: () => void) => {
+    update()
+    // Never finishes during a test, so the direction can be checked.
+    return { finished: new Promise(() => undefined) }
+  })
+
+  beforeEach(() => {
+    Object.defineProperty(document, 'startViewTransition', {
+      configurable: true,
+      value: startViewTransition,
+    })
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({ matches: false })),
+    )
+  })
+
+  afterEach(() => {
+    Reflect.deleteProperty(document, 'startViewTransition')
+    delete document.documentElement.dataset.transition
+    vi.unstubAllGlobals()
+    startViewTransition.mockClear()
+  })
+
+  it('slides to the next month and still announces it', async () => {
+    renderSummary([])
+
+    await next()
+
+    expect(startViewTransition).toHaveBeenCalledOnce()
+    expect(document.documentElement.dataset.transition).toBe('next')
+    expect(month()).toHaveTextContent('November 2026')
+  })
+
+  it('slides the other way for the previous month', async () => {
+    renderSummary([])
+
+    await previous()
+
+    expect(document.documentElement.dataset.transition).toBe('previous')
+    expect(month()).toHaveTextContent('September 2026')
+  })
+
+  it('slides forward when going back to this month from an earlier one', async () => {
+    renderSummary([])
+    await previous()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to this month' }),
+    )
+
+    expect(document.documentElement.dataset.transition).toBe('next')
+    expect(month()).toHaveTextContent('October 2026')
+  })
+
+  it('switches without a transition when reduced motion is on', async () => {
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({ matches: true })),
+    )
+    renderSummary([])
+
+    await next()
+
+    expect(startViewTransition).not.toHaveBeenCalled()
+    expect(month()).toHaveTextContent('November 2026')
   })
 })

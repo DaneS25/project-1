@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { flushSync } from 'react-dom'
 import { Button } from '@/shared/components/Button'
 import { EmptyState } from '@/shared/components/EmptyState'
 import { compareCategoryNames } from '@/shared/lib/categories'
 import { addMonths, formatMonth, monthOf } from '@/shared/lib/dates'
+import { withViewTransition } from '@/shared/lib/viewTransition'
 import { useAppData } from '@/shared/store/AppDataContext'
-import type { IsoDate } from '@/shared/types'
+import type { IsoDate, MonthKey } from '@/shared/types'
 import { summarizeMonth } from '../logic/summary'
 import { CategorySummaryList } from './CategorySummaryList'
 import styles from './MonthlySummary.module.css'
@@ -28,6 +30,24 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
   const previous = addMonths(month, -1)
   const next = addMonths(month, 1)
 
+  /**
+   * Changes month, sliding the content left for a later month and right for
+   * an earlier one where the View Transitions API is available and motion
+   * is allowed. flushSync applies the change inside the transition callback,
+   * so the browser snapshots the new month (and the month name, a live
+   * region, updates and is announced as before).
+   */
+  function goTo(target: MonthKey) {
+    withViewTransition(
+      () => {
+        flushSync(() => {
+          setMonth(target)
+        })
+      },
+      target > month ? 'next' : 'previous',
+    )
+  }
+
   return (
     <div className={styles.summary}>
       <div className={styles.nav}>
@@ -37,7 +57,7 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
           type="button"
           aria-label={`Previous month, ${formatMonth(previous)}`}
           onClick={() => {
-            setMonth(previous)
+            goTo(previous)
           }}
         >
           <span aria-hidden="true">‹</span> Previous
@@ -51,7 +71,7 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
           type="button"
           aria-label={`Next month, ${formatMonth(next)}`}
           onClick={() => {
-            setMonth(next)
+            goTo(next)
           }}
         >
           Next <span aria-hidden="true">›</span>
@@ -64,13 +84,13 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
           className={styles.todayButton}
           type="button"
           onClick={() => {
-            setMonth(currentMonth)
+            goTo(currentMonth)
           }}
         >
           Back to this month
         </Button>
       )}
-      {/* Keyed by month so the content fades in again on a change. */}
+      {/* Keyed by month so the content (and its bars) animate in again. */}
       <div key={month} className={styles.content}>
         {!result.ok ? (
           <p className={styles.error}>
