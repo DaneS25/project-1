@@ -31,24 +31,25 @@ export function AppDataProvider({
   // data. Only written in handlers, never during render.
   const latest = useRef(store)
 
-  function apply(action: AppDataAction) {
+  /** Returns false if the reducer rejected the action as invalid. */
+  function apply(action: AppDataAction): boolean {
     const current = latest.current
     const data = appDataReducer(current.data, action)
-    if (data === current.data) return
+    if (data === current.data) return false
     const next = persist(current, data, storage)
     latest.current = next
     setStore(next)
+    return true
   }
 
   const value: AppDataContextValue = {
     data: store.data,
     notice: getNotice(store),
-    addTransaction: (transaction) => {
+    addTransaction: (transaction) =>
       apply({
         type: 'transactionAdded',
         transaction: { ...transaction, id: createId() },
-      })
-    },
+      }),
     updateTransaction: (transaction) => {
       apply({ type: 'transactionUpdated', transaction })
     },

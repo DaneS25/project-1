@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -118,6 +119,40 @@ describe('AppDataProvider', () => {
     expect(JSON.parse(items.get(STORAGE_KEY) ?? 'null')).toMatchObject({
       data: { transactions: [{}, {}] },
     })
+  })
+
+  it('reports whether a transaction was added', async () => {
+    const { storage } = createTestStorage()
+    function AddResults() {
+      const { data, addTransaction } = useAppData()
+      const [results, setResults] = useState<boolean[]>([])
+      const categoryId = data.categories[0]?.id ?? ''
+      return (
+        <>
+          <p>Results: {results.join(', ')}</p>
+          <button
+            onClick={() => {
+              const date = '2026-10-08'
+              setResults([
+                addTransaction({ amountCents: 100, date, categoryId }),
+                addTransaction({ amountCents: 0, date, categoryId }),
+              ])
+            }}
+          >
+            Add
+          </button>
+        </>
+      )
+    }
+    render(
+      <AppDataProvider storage={storage} createId={createTestIds()}>
+        <AddResults />
+      </AppDataProvider>,
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(screen.getByText('Results: true, false')).toBeInTheDocument()
   })
 
   it('ignores deleting a category that still has transactions', async () => {

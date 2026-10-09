@@ -1,0 +1,37 @@
+.fallback {
+  display: grid;
+  place-items: center;
+  min-block-size: 100dvh;
+  padding: var(--gutter);
+}
+
+.card {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+  max-inline-size: 32rem;
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.title {
+  font-size: var(--text-xl);
+}
+
+.message {
+  color: var(--color-text-muted);
+}
+
+.button {
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+  font-weight: var(--weight-semibold);
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}

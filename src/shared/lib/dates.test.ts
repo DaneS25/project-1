@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isIsoDate } from './dates'
+import { isIsoDate, toIsoDate } from './dates'
 
 describe('isIsoDate', () => {
   it.each([
@@ -24,5 +24,19 @@ describe('isIsoDate', () => {
     ['an empty string', ''],
   ])('rejects %s', (_label, value) => {
     expect(isIsoDate(value)).toBe(false)
+  })
+})
+
+describe('toIsoDate', () => {
+  it('formats the local date with zero padding', () => {
+    expect(toIsoDate(new Date(2026, 0, 5))).toBe('2026-01-05')
+  })
+
+  it('uses the local day just after midnight, not the UTC day', () => {
+    expect(toIsoDate(new Date(2026, 9, 9, 0, 30))).toBe('2026-10-09')
+  })
+
+  it('produces a date that isIsoDate accepts', () => {
+    expect(isIsoDate(toIsoDate(new Date(2024, 1, 29)))).toBe(true)
   })
 })
