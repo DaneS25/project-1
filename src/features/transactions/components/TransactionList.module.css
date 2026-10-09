@@ -24,9 +24,27 @@
     padding-block-end: 0;
   }
 
+  /*
+   * New rows slide and fade in from @starting-style (browsers without it
+   * just show the row). A deleted row is kept briefly as .leaving and fades
+   * out; with reduced motion it's removed at once, so it never transitions.
+   */
   @media (prefers-reduced-motion: no-preference) {
-    animation: slide-in var(--dur-base) var(--ease-out);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(-0.25rem);
+    }
   }
+}
+
+.leaving {
+  opacity: 0;
+  transform: translateX(0.75rem);
+  pointer-events: none;
 }
 
 .details {
@@ -54,13 +72,6 @@
   font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
   text-align: end;
-}
-
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(-0.25rem);
-  }
 }
 
 .container:focus-visible {

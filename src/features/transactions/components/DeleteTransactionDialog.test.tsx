@@ -1,12 +1,12 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CURRENT_VERSION } from '@/shared/storage/migrations'
 import { STORAGE_KEY } from '@/shared/storage/storage'
 import { AppDataProvider } from '@/shared/store/AppDataProvider'
 import { createTestIds, createTestStorage } from '@/shared/store/testStorage'
 import type { Transaction } from '@/shared/types'
-import { TransactionList } from './TransactionList'
+import { LEAVE_FALLBACK_MS, TransactionList } from './TransactionList'
 
 const categories = [
   { id: 'groceries', name: 'Groceries', monthlyBudgetCents: 0 },
@@ -160,5 +160,108 @@ describe('deleting a transaction', () => {
       'Deleted $12.50 from Groceries.',
     )
     expect(document.activeElement).toContainElement(screen.getByRole('status'))
+  })
+})
+
+describe('fading out a deleted row', () => {
+  // jsdom has no matchMedia, so the other tests take the no-motion path.
+  // Stub it to choose whether motion is allowed.
+  function allowMotion(isAllowed: boolean) {
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn((query: string) => ({
+        matches: query === '(prefers-reduced-motion: reduce)' && !isAllowed,
+      })),
+    )
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.useRealTimers()
+  })
+
+  // The leaving row is aria-hidden, so look for it including hidden ones.
+  const leavingRow = () =>
+    screen
+      .queryAllByRole('listitem', { hidden: true })
+      .find((item) => item.getAttribute('aria-hidden') === 'true')
+
+  it('keeps the deleted row on screen, hidden and inert, while it fades', async () => {
+    allowMotion(true)
+    renderList()
+    await userEvent.click(deleteButton(/Rent/))
+
+    await confirm()
+
+    const row = leavingRow()
+    expect(row).toHaveTextContent('Rent')
+    expect(row).toHaveAttribute('inert')
+    // Screen readers and queries already see the list without it.
+    expect(screen.getAllByRole('listitem')).toHaveLength(2)
+  })
+
+  it('still moves focus to the next row’s Edit button', async () => {
+    allowMotion(true)
+    renderList()
+    await userEvent.click(deleteButton(/Rent/))
+
+    await confirm()
+
+    expect(
+      screen.getByRole('button', { name: /^Edit Groceries, \$4\.00/ }),
+    ).toHaveFocus()
+  })
+
+  it('removes the row when its fade finishes', async () => {
+    allowMotion(true)
+    renderList()
+    await userEvent.click(deleteButton(/Rent/))
+    await confirm()
+
+    // Not a user action, so fireEvent is the tool for a transition ending.
+    fireEvent.transitionEnd(leavingRow() ?? document.body)
+
+    expect(leavingRow()).toBeUndefined()
+  })
+
+  it('removes the row after a fallback time even if no transition ends', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    allowMotion(true)
+    renderList()
+    await userEvent.click(deleteButton(/Rent/))
+    await confirm()
+    expect(leavingRow()).toBeDefined()
+
+    act(() => {
+      vi.advanceTimersByTime(LEAVE_FALLBACK_MS)
+    })
+
+    expect(leavingRow()).toBeUndefined()
+  })
+
+  it('shows the empty state once the last row has faded out', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    allowMotion(true)
+    renderList([shop])
+    await userEvent.click(deleteButton(/Groceries/))
+    await confirm()
+    expect(screen.queryByText('No transactions yet')).not.toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(LEAVE_FALLBACK_MS)
+    })
+
+    expect(screen.getByText('No transactions yet')).toBeInTheDocument()
+  })
+
+  it('removes the row at once with reduced motion', async () => {
+    allowMotion(false)
+    renderList()
+    await userEvent.click(deleteButton(/Rent/))
+
+    await confirm()
+
+    expect(leavingRow()).toBeUndefined()
+    expect(screen.queryAllByRole('listitem', { hidden: true })).toHaveLength(2)
   })
 })
