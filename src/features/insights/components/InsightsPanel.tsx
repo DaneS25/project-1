@@ -6,6 +6,7 @@ import { useAppData } from '@/shared/store/AppDataContext'
 import type { IsoDate } from '@/shared/types'
 import { spendingByCategory } from '../logic/insights'
 import { ChartCarousel, type ChartSlide } from './ChartCarousel'
+import { DonutChart } from './DonutChart'
 import styles from './InsightsPanel.module.css'
 
 type InsightsPanelProps = {
@@ -13,7 +14,7 @@ type InsightsPanelProps = {
   today: IsoDate
 }
 
-/** The charts, in order. Tasks 28 to 31 replace the placeholder content. */
+/** The charts, in order. Tasks 29 to 31 replace the placeholder content. */
 const CHART_TITLES = [
   { id: 'breakdown', title: 'Where the money went' },
   { id: 'trend', title: 'Spending trend' },
@@ -35,7 +36,15 @@ export function InsightsPanel({ today }: InsightsPanelProps) {
   const slides: ChartSlide[] = CHART_TITLES.map(({ id, title }) => ({
     id,
     title,
-    content: <p className={styles.placeholder}>This chart is coming soon.</p>,
+    content:
+      id === 'breakdown' && breakdown.ok ? (
+        <DonutChart
+          breakdown={breakdown.value}
+          monthLabel={formatMonth(month)}
+        />
+      ) : (
+        <p className={styles.placeholder}>This chart is coming soon.</p>
+      ),
   }))
 
   return (
