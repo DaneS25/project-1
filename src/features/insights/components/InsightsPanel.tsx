@@ -5,6 +5,7 @@ import { formatMonth, monthOf } from '@/shared/lib/dates'
 import { useAppData } from '@/shared/store/AppDataContext'
 import type { IsoDate } from '@/shared/types'
 import { spendingByCategory } from '../logic/insights'
+import { BudgetChart } from './BudgetChart'
 import { ChartCarousel, type ChartSlide } from './ChartCarousel'
 import { DonutChart } from './DonutChart'
 import { TrendChart } from './TrendChart'
@@ -15,7 +16,7 @@ type InsightsPanelProps = {
   today: IsoDate
 }
 
-/** The charts, in order. Tasks 30 and 31 replace the placeholder content. */
+/** The charts, in order. Task 31 replaces the placeholder content. */
 const CHART_TITLES = [
   { id: 'breakdown', title: 'Where the money went' },
   { id: 'trend', title: 'Spending trend' },
@@ -45,6 +46,8 @@ export function InsightsPanel({ today }: InsightsPanelProps) {
         />
       ) : id === 'trend' ? (
         <TrendChart data={data} month={month} />
+      ) : id === 'budget' ? (
+        <BudgetChart data={data} month={month} />
       ) : (
         <p className={styles.placeholder}>This chart is coming soon.</p>
       ),
