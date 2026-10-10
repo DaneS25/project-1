@@ -3,7 +3,7 @@ import { budgetFill } from '../logic/progress'
 import type { CategorySummary } from '../logic/summary'
 import { BudgetBar } from './BudgetBar'
 import styles from './MonthlySummary.module.css'
-import { OverBudgetIcon } from './OverBudgetIcon'
+import { OverBudgetNote } from './OverBudgetNote'
 
 type CategorySummaryListProps = {
   categories: readonly CategorySummary[]
@@ -28,10 +28,10 @@ export function CategorySummaryList({ categories }: CategorySummaryListProps) {
               </p>
               <BudgetBar fill={budgetFill(summary) ?? 0} />
               {summary.isOverBudget ? (
-                <p className={[styles.standing, styles.over].join(' ')}>
-                  <OverBudgetIcon />
-                  Over budget by {formatCents(-summary.remainingCents)}
-                </p>
+                <OverBudgetNote
+                  overCents={-summary.remainingCents}
+                  className={styles.standing}
+                />
               ) : (
                 <p className={styles.standing}>
                   {formatCents(summary.remainingCents)} remaining

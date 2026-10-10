@@ -1,0 +1,117 @@
+.chart {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.rows {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+}
+
+.name {
+  overflow-wrap: anywhere;
+}
+
+.amounts {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.standing {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+/* The pair: budget (outlined) above spending (filled), on one scale. */
+.bars {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 3px;
+}
+
+.budgetBar,
+.spentBar {
+  display: block;
+  block-size: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Outline in the text colour: about 15:1 against the card. */
+.budgetBar {
+  border: 2px solid var(--color-text);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: bar-fade var(--dur-base) var(--ease-out) both;
+  }
+}
+
+/* Dusk blue: 6.38:1 (light) / 6.09:1 (dark) against the card. */
+.spentBar {
+  min-inline-size: 3px;
+  background: var(--chart-2);
+  transform-origin: left center;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: bar-grow var(--dur-base) var(--ease-out) both;
+  }
+}
+
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.keyBudget,
+.keySpent {
+  display: inline-block;
+  inline-size: 1rem;
+  block-size: 0.75rem;
+  margin-inline-end: var(--space-1);
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+.keyBudget {
+  border: 2px solid var(--color-text);
+}
+
+.keySpent {
+  background: var(--chart-2);
+}
+
+.message {
+  font-size: var(--text-sm);
+}
+
+@keyframes bar-grow {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+}
+
+@keyframes bar-fade {
+  from {
+    opacity: 0;
+  }
+}

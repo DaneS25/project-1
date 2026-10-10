@@ -1,4 +1,5 @@
 export { MonthlySummary } from './components/MonthlySummary'
+export { OverBudgetNote } from './components/OverBudgetNote'
 export {
   summarizeMonth,
   type CategorySummary,
