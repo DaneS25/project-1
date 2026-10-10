@@ -1,0 +1,16 @@
+.insights {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.placeholder {
+  color: var(--color-text-muted);
+}
+
+.error {
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}

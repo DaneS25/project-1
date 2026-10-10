@@ -186,6 +186,18 @@
   background: transparent;
   border-color: var(--color-border);
 
+  /* The chosen one of a set (e.g. a chart dot): tinted and bordered. */
+  &[aria-current='true'] {
+    background: var(--color-accent-soft);
+    border-color: var(--color-accent-text);
+  }
+
+  /* aria-disabled keeps the button focusable; show it can't be used. */
+  &[aria-disabled='true'] {
+    cursor: default;
+    opacity: 0.55;
+  }
+
   @media (hover: hover) {
     &:hover {
       background: var(--color-accent-soft);
