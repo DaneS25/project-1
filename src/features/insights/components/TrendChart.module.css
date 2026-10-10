@@ -1,9 +1,11 @@
 .trend {
   display: grid;
   gap: var(--space-3);
+  container-type: inline-size;
 }
 
 .svg {
+  display: block;
   inline-size: 100%;
   block-size: auto;
   overflow: visible;
@@ -21,9 +23,27 @@
     stroke-width: 2;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    animation: bar-rise var(--dur-base) var(--ease-out) both;
+  /* The month in the tooltip: outlined too. */
+  &[data-active]:not([data-selected]) {
+    stroke: var(--color-text);
+    stroke-width: 1;
   }
+}
+
+/* Bars grow up from the axis the first time the chart is seen. */
+@media (prefers-reduced-motion: no-preference) {
+  .trend:not([data-seen]) .bar {
+    transform: scaleY(0);
+  }
+
+  .trend[data-seen] .bar {
+    animation: bar-rise var(--dur-base) var(--ease-out);
+  }
+}
+
+.hit {
+  fill: transparent;
+  pointer-events: all;
 }
 
 .budgetLine {
@@ -32,6 +52,7 @@
   stroke-width: 2;
   stroke-dasharray: 5 4;
   stroke-linecap: round;
+  pointer-events: none;
 }
 
 .key {
@@ -66,18 +87,8 @@
   font-size: var(--text-sm);
 }
 
-.visuallyHidden {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 @keyframes bar-rise {
   from {
-    opacity: 0;
     transform: scaleY(0);
   }
 }

@@ -112,6 +112,9 @@ export function ChartCarousel({ slides }: ChartCarouselProps) {
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    // Only on the strip itself: arrows inside a card (the category select,
+    // a chart's points) belong to that control.
+    if (event.target !== event.currentTarget) return
     const moves: Partial<Record<string, number>> = {
       ArrowLeft: current - 1,
       ArrowRight: current + 1,

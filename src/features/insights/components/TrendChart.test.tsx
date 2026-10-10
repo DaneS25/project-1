@@ -23,7 +23,11 @@ const budgetRuns = () =>
   Array.from(chart().querySelectorAll('polyline')).map((line) =>
     line.getAttribute('data-budget-run'),
   )
-const table = () => screen.getByRole('table', { hidden: true })
+// The table is behind "Show as table", as for a user.
+async function showTable() {
+  await userEvent.click(screen.getByRole('button', { name: 'Show as table' }))
+  return screen.getByRole('table')
+}
 
 describe('TrendChart', () => {
   it('shows 6 months up to the selected one by default', () => {
@@ -38,7 +42,7 @@ describe('TrendChart', () => {
       '2026-10',
     ])
     expect(chart()).toHaveAccessibleName(
-      'Spending trend for the 6 months to October 2026. The table that follows lists each month.',
+      'Spending trend for the 6 months to October 2026',
     )
   })
 
@@ -59,13 +63,15 @@ describe('TrendChart', () => {
     expect(bars()).toHaveLength(6)
   })
 
-  it('shows months with no spending as zero', () => {
+  it('shows months with no spending as zero', async () => {
     renderChart({
       categories: [rent],
       transactions: [spend(50000, '2026-08-10'), spend(20000, '2026-10-01')],
     })
 
-    const rows = within(table()).getAllByRole('row').slice(1)
+    const rows = within(await showTable())
+      .getAllByRole('row')
+      .slice(1)
     expect(rows.map((row) => row.textContent)).toEqual([
       'May 2026$0.00No budgets set',
       'June 2026$0.00No budgets set',
@@ -83,14 +89,14 @@ describe('TrendChart', () => {
     expect(budgetRuns()).toEqual([])
   })
 
-  it('draws the budget line across every month when budgets are set', () => {
+  it('draws the budget line across every month when budgets are set', async () => {
     renderChart({
       categories: [{ ...rent, monthlyBudgetCents: 150000 }],
       transactions: [],
     })
 
     expect(budgetRuns()).toEqual(['0-5'])
-    expect(within(table()).getAllByRole('row')[6]).toHaveTextContent(
+    expect(within(await showTable()).getAllByRole('row')[6]).toHaveTextContent(
       '$1,500.00',
     )
   })

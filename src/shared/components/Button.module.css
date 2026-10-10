@@ -186,9 +186,10 @@
   background: transparent;
   border-color: var(--color-border);
 
-  /* The chosen one of a set (a chart dot, a pressed toggle): tinted. */
+  /* The chosen one of a set (a chart dot, a pressed or open toggle): tinted. */
   &[aria-current='true'],
-  &[aria-pressed='true'] {
+  &[aria-pressed='true'],
+  &[aria-expanded='true'] {
     background: var(--color-accent-soft);
     border-color: var(--color-accent-text);
   }

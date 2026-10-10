@@ -1,6 +1,7 @@
 .chart {
   display: grid;
   gap: var(--space-3);
+  container-type: inline-size;
 }
 
 .controls {
@@ -14,7 +15,15 @@
   }
 }
 
+/* On a narrow card the select takes the full width, the toggle below it. */
+@container (inline-size < 22rem) {
+  .controls > :first-child {
+    flex-basis: 100%;
+  }
+}
+
 .svg {
+  display: block;
   inline-size: 100%;
   block-size: auto;
   overflow: visible;
@@ -27,6 +36,8 @@
   stroke-width: 2.5;
   stroke-linejoin: round;
   stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: bottom;
 }
 
 /*
@@ -46,6 +57,16 @@
     stroke: var(--color-text);
     stroke-width: 2;
   }
+
+  /* The month in the tooltip: outlined in the text colour. */
+  &[data-active]:not([data-selected]) {
+    stroke: var(--color-text);
+  }
+}
+
+.hit {
+  fill: transparent;
+  pointer-events: all;
 }
 
 .budgetLine {
@@ -53,15 +74,28 @@
   stroke-width: 2;
   stroke-dasharray: 5 4;
   stroke-linecap: round;
+  pointer-events: none;
 }
 
+/*
+ * The first time the chart is seen, the line rises from its lowest point
+ * and the markers grow from their centres. Transform only.
+ */
 @media (prefers-reduced-motion: no-preference) {
-  .line {
-    animation: series-fade var(--dur-base) var(--ease-out) both;
+  .chart:not([data-seen]) .line {
+    transform: scaleY(0);
   }
 
-  .marker {
-    animation: marker-pop var(--dur-base) var(--ease-out) both;
+  .chart:not([data-seen]) .marker {
+    transform: scale(0);
+  }
+
+  .chart[data-seen] .line {
+    animation: line-rise var(--dur-base) var(--ease-out);
+  }
+
+  .chart[data-seen] .marker {
+    animation: marker-grow var(--dur-base) var(--ease-out);
   }
 }
 
@@ -95,24 +129,14 @@
   font-size: var(--text-sm);
 }
 
-.visuallyHidden {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-@keyframes series-fade {
+@keyframes line-rise {
   from {
-    opacity: 0;
+    transform: scaleY(0);
   }
 }
 
-@keyframes marker-pop {
+@keyframes marker-grow {
   from {
-    opacity: 0;
     transform: scale(0);
   }
 }

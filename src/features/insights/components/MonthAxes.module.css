@@ -12,7 +12,7 @@
 
 .axisLabel,
 .monthLabel {
-  font-size: 10px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
   fill: var(--color-text-muted);
 }

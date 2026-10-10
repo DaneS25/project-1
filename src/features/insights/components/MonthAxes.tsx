@@ -4,18 +4,31 @@ import { formatAxisAmount } from '../logic/format'
 import type { NiceScale } from '../logic/trend'
 import styles from './MonthAxes.module.css'
 
-// Drawing area, in SVG units (the SVG scales to its width). Shared by the
-// month-by-month charts so they line up when flicking between cards.
-export const WIDTH = 360
+/**
+ * The month-by-month charts are drawn at their real width (measured with
+ * `useElementWidth`), so one SVG unit is one CSS pixel and the 12px axis
+ * text stays 12px on a narrow phone instead of shrinking with the chart.
+ * The default width is used before measuring and in tests.
+ */
+export const DEFAULT_WIDTH = 360
 export const HEIGHT = 200
-const LEFT = 52
+/**
+ * Below this the plot gets too cramped and the SVG scales down. A 320px
+ * phone leaves the card about 224px, so the text stays 12px there.
+ */
+const MIN_WIDTH = 200
 const RIGHT = 8
-const TOP = 10
-const BOTTOM = 26
-const PLOT_W = WIDTH - LEFT - RIGHT
+const TOP = 12
+const BOTTOM = 28
 const PLOT_H = HEIGHT - TOP - BOTTOM
+/** Roughly one 12px tabular character, for sizing the amount labels. */
+const CHAR_WIDTH = 7
+/** The room a month label needs ("Jan '27" at 12px), for thinning them. */
+const MONTH_LABEL_WIDTH = 48
 
 export type MonthGeometry = {
+  /** The SVG's width in units (its CSS width once measured). */
+  width: number
   /** Width of one month's slot. */
   slot: number
   /** The y coordinate of an amount. */
@@ -28,16 +41,29 @@ export type MonthGeometry = {
   right: number
 }
 
-/** Geometry for `count` months on a `scale`. Floats from here on. */
-export function monthGeometry(count: number, scale: NiceScale): MonthGeometry {
-  const slot = PLOT_W / count
+/**
+ * Geometry for `count` months on a `scale`, `measuredWidth` wide. The left
+ * margin fits the longest amount label. Floats from here on.
+ */
+export function monthGeometry(
+  count: number,
+  scale: NiceScale,
+  measuredWidth = DEFAULT_WIDTH,
+): MonthGeometry {
+  const width = Math.max(measuredWidth, MIN_WIDTH)
+  const longest = Math.max(
+    ...scale.ticks.map((tick) => formatAxisAmount(tick).length),
+  )
+  const left = longest * CHAR_WIDTH + 10
+  const slot = (width - left - RIGHT) / count
   return {
+    width,
     slot,
     y: (cents) => TOP + PLOT_H - (cents / scale.topCents) * PLOT_H,
-    centreX: (index) => LEFT + slot * index + slot / 2,
+    centreX: (index) => left + slot * index + slot / 2,
     baseY: TOP + PLOT_H,
-    left: LEFT,
-    right: WIDTH - RIGHT,
+    left,
+    right: width - RIGHT,
   }
 }
 
@@ -72,8 +98,9 @@ export function AmountGrid({
 }
 
 /**
- * Month labels under the plot. The selected month's is bold; with 12
- * months every other label is dropped for space, but never the selected.
+ * Month labels under the plot, counted back from the selected (last) month
+ * and thinned to every 2nd or 3rd when the slots are too narrow for them.
+ * The selected month's label always shows, in bold.
  */
 export function MonthLabels({
   months,
@@ -84,8 +111,10 @@ export function MonthLabels({
   selected: MonthKey
   geometry: MonthGeometry
 }) {
+  const step = Math.max(1, Math.ceil(MONTH_LABEL_WIDTH / geometry.slot))
+  const last = months.length - 1
   return months.map((month, index) =>
-    months.length > 6 && index % 2 === 1 && month !== selected ? null : (
+    (last - index) % step !== 0 && month !== selected ? null : (
       <text
         key={month}
         className={styles.monthLabel}

@@ -109,6 +109,30 @@ describe('ChartCarousel', () => {
     expect(track()).toHaveFocus()
   })
 
+  it('leaves arrow keys inside a card to that card', async () => {
+    render(
+      <ChartCarousel
+        slides={[
+          {
+            id: 'a',
+            title: 'Category over time',
+            content: (
+              <select aria-label="Category">
+                <option>Food</option>
+                <option>Rent</option>
+              </select>
+            ),
+          },
+          { id: 'b', title: 'Spending trend', content: <p>Bars</p> },
+        ]}
+      />,
+    )
+    screen.getByRole('combobox', { name: 'Category' }).focus()
+
+    await userEvent.keyboard('{ArrowRight}')
+    expect(currentHeading()).toHaveTextContent('Category over time')
+  })
+
   it('hides the other cards from screen readers and the keyboard', () => {
     renderCarousel()
 

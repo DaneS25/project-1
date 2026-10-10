@@ -1,8 +1,20 @@
+.root {
+  display: grid;
+  gap: var(--space-3);
+  container-type: inline-size;
+}
+
+/* Donut above the legend on a narrow card; side by side when there's room. */
 .chart {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
   align-items: center;
   gap: var(--space-4);
+}
+
+@container (inline-size >= 26rem) {
+  .chart {
+    grid-template-columns: 12rem 1fr;
+  }
 }
 
 .donut {
@@ -15,6 +27,27 @@
 .svg {
   inline-size: 100%;
   block-size: 100%;
+}
+
+/* The ring grows from the centre the first time the chart is seen. */
+.ring {
+  transform-origin: 50px 50px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .root:not([data-seen]) .ring {
+    transform: scale(0);
+  }
+
+  .root[data-seen] .ring {
+    animation: ring-grow var(--dur-base) var(--ease-out);
+  }
+}
+
+@keyframes ring-grow {
+  from {
+    transform: scale(0);
+  }
 }
 
 /* Slice colours come from --chart-1 to --chart-6 (set inline). */

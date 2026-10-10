@@ -47,11 +47,17 @@ const select = () => screen.getByRole('combobox', { name: 'Category' })
 // Markers and the budget line are drawn parts of the image.
 const markers = () => Array.from(chart().querySelectorAll('circle'))
 const budgetLine = () => chart().querySelector('[data-budget-line]')
-const tableRows = () =>
-  within(screen.getByRole('table', { hidden: true }))
+// The table is behind "Show as table", as for a user; open it once.
+async function tableRows() {
+  const button = screen.getByRole('button', { name: 'Show as table' })
+  if (button.getAttribute('aria-expanded') !== 'true') {
+    await userEvent.click(button)
+  }
+  return within(screen.getByRole('table'))
     .getAllByRole('row')
     .slice(1)
     .map((row) => row.textContent)
+}
 
 describe('CategoryChart', () => {
   it("opens on the month's largest category, 6 months to the selected one", () => {
@@ -59,7 +65,7 @@ describe('CategoryChart', () => {
 
     expect(select()).toHaveDisplayValue('Rent')
     expect(chart()).toHaveAccessibleName(
-      'Spending on Rent for the 6 months to October 2026. No budget set. The table that follows lists each month.',
+      'Spending on Rent for the 6 months to October 2026. No budget set.',
     )
     expect(markers().map((m) => m.getAttribute('data-month'))).toEqual([
       '2026-05',
@@ -88,15 +94,10 @@ describe('CategoryChart', () => {
     // Budgets aren't stored per month, so it says "current" everywhere.
     const budget = 'Current budget $600.00 a month'
     expect(chart()).toHaveAccessibleName(
-      `Spending on Groceries for the 6 months to October 2026. ${budget}. The table that follows lists each month.`,
+      `Spending on Groceries for the 6 months to October 2026. ${budget}.`,
     )
-    expect(
-      within(screen.getByRole('table', { hidden: true })).getByText(
-        `Spending on Groceries for the 6 months to October 2026. ${budget}.`,
-      ),
-    ).toBeInTheDocument()
     expect(screen.getByText(budget)).toBeInTheDocument()
-    expect(tableRows()).toEqual([
+    expect(await tableRows()).toEqual([
       'May 2026$0.00',
       'June 2026$0.00',
       'July 2026$0.00',
@@ -114,7 +115,7 @@ describe('CategoryChart', () => {
     expect(twelve).toHaveAttribute('aria-pressed', 'true')
     expect(markers()).toHaveLength(12)
     expect(markers()[0]).toHaveAttribute('data-month', '2025-11')
-    expect(tableRows()).toHaveLength(12)
+    expect(await tableRows()).toHaveLength(12)
 
     await userEvent.click(screen.getByRole('button', { name: '6 months' }))
     expect(markers()).toHaveLength(6)
@@ -132,7 +133,7 @@ describe('CategoryChart', () => {
     renderChart()
     await userEvent.selectOptions(select(), 'Fuel')
 
-    expect(tableRows().every((row) => row.endsWith('$0.00'))).toBe(true)
+    expect((await tableRows()).every((row) => row.endsWith('$0.00'))).toBe(true)
     const baseline = markers()[0]?.getAttribute('cy')
     expect(markers()).toHaveLength(6)
     expect(markers().every((m) => m.getAttribute('cy') === baseline)).toBe(true)
