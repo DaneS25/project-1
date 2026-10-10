@@ -53,6 +53,10 @@
   .panel:nth-child(4) {
     animation-delay: 180ms;
   }
+
+  .panel:nth-child(5) {
+    animation-delay: 240ms;
+  }
 }
 
 @keyframes rise-in {

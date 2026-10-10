@@ -1,3 +1,4 @@
+export { InsightsPanel } from './components/InsightsPanel'
 export { formatPercentChange, formatShare } from './logic/format'
 export {
   budgetVsActual,

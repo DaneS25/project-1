@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { flushSync } from 'react-dom'
-import { Button } from '@/shared/components/Button'
 import { EmptyState } from '@/shared/components/EmptyState'
+import { MonthNav } from '@/shared/components/MonthNav'
 import { compareCategoryNames } from '@/shared/lib/categories'
-import { addMonths, formatMonth, monthOf } from '@/shared/lib/dates'
+import { formatMonth, monthOf } from '@/shared/lib/dates'
 import { withViewTransition } from '@/shared/lib/viewTransition'
 import { useAppData } from '@/shared/store/AppDataContext'
 import type { IsoDate, MonthKey } from '@/shared/types'
@@ -27,8 +27,6 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
   const currentMonth = monthOf(today)
   const [month, setMonth] = useState(currentMonth)
   const result = summarizeMonth(data, month)
-  const previous = addMonths(month, -1)
-  const next = addMonths(month, 1)
 
   /**
    * Changes month, sliding the content left for a later month and right for
@@ -50,46 +48,7 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
 
   return (
     <div className={styles.summary}>
-      <div className={styles.nav}>
-        <Button
-          variant="outline"
-          className={styles.navButton}
-          type="button"
-          aria-label={`Previous month, ${formatMonth(previous)}`}
-          onClick={() => {
-            goTo(previous)
-          }}
-        >
-          <span aria-hidden="true">‹</span> Previous
-        </Button>
-        <p className={styles.month} role="status">
-          {formatMonth(month)}
-        </p>
-        <Button
-          variant="outline"
-          className={styles.navButton}
-          type="button"
-          aria-label={`Next month, ${formatMonth(next)}`}
-          onClick={() => {
-            goTo(next)
-          }}
-        >
-          Next <span aria-hidden="true">›</span>
-        </Button>
-      </div>
-      {month !== currentMonth && (
-        <Button
-          variant="outline"
-          size="small"
-          className={styles.todayButton}
-          type="button"
-          onClick={() => {
-            goTo(currentMonth)
-          }}
-        >
-          Back to this month
-        </Button>
-      )}
+      <MonthNav month={month} homeMonth={currentMonth} onChange={goTo} />
       {/* Keyed by month so the content (and its bars) animate in again. */}
       <div key={month} className={styles.content}>
         {!result.ok ? (

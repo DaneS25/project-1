@@ -1,0 +1,59 @@
+.carousel {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* One card per view; swipe or scroll snaps to the next card. */
+.track {
+  display: grid;
+  grid-auto-columns: 100%;
+  grid-auto-flow: column;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: var(--radius-md);
+
+  /* Smooth only with motion allowed (the global reduce rule forces auto). */
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
+}
+
+.slide {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-block-size: 12rem;
+  padding: var(--space-4);
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  scroll-snap-align: start;
+}
+
+.title {
+  font-size: var(--text-base);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
