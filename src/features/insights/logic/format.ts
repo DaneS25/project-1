@@ -1,4 +1,5 @@
 import type { Cents } from '@/shared/types'
+import { formatCents } from '@/shared/lib/money'
 
 /**
  * A share of a total as a whole percentage for display, rounded half up
@@ -35,4 +36,19 @@ export function formatPercentChange(
 function roundedPercent(part: Cents, total: Cents): bigint {
   const numerator = BigInt(part) * 200n + BigInt(total)
   return numerator / (BigInt(total) * 2n)
+}
+
+const wholeDollars = new Intl.NumberFormat('en-NZ', {
+  style: 'currency',
+  currency: 'NZD',
+  maximumFractionDigits: 0,
+})
+
+/**
+ * An axis amount: whole dollars without cents ("$1,500") when the value is
+ * a whole number of dollars, otherwise the usual "$0.50".
+ */
+export function formatAxisAmount(cents: Cents): string {
+  if (cents % 100 !== 0) return formatCents(cents)
+  return wholeDollars.format(cents / 100)
 }

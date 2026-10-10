@@ -186,8 +186,9 @@
   background: transparent;
   border-color: var(--color-border);
 
-  /* The chosen one of a set (e.g. a chart dot): tinted and bordered. */
-  &[aria-current='true'] {
+  /* The chosen one of a set (a chart dot, a pressed toggle): tinted. */
+  &[aria-current='true'],
+  &[aria-pressed='true'] {
     background: var(--color-accent-soft);
     border-color: var(--color-accent-text);
   }
