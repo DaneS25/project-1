@@ -1,0 +1,118 @@
+.chart {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-2) var(--space-3);
+
+  & > :first-child {
+    flex: 1 1 10rem;
+  }
+}
+
+.svg {
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+/* Dusk blue: 6.38:1 (light) / 6.09:1 (dark) against the card. */
+.line {
+  fill: none;
+  stroke: var(--chart-2);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/*
+ * A marker on every month, so each value is a visible point and not only a
+ * bend in the line. The card-coloured ring keeps markers apart from the line.
+ */
+.marker {
+  fill: var(--chart-2);
+  stroke: var(--color-surface-sunken);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+
+  /* Selected month: larger, orange, outlined in the text colour. */
+  &[data-selected] {
+    fill: var(--color-accent);
+    stroke: var(--color-text);
+    stroke-width: 2;
+  }
+}
+
+.budgetLine {
+  stroke: var(--color-text);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .line {
+    animation: series-fade var(--dur-base) var(--ease-out) both;
+  }
+
+  .marker {
+    animation: marker-pop var(--dur-base) var(--ease-out) both;
+  }
+}
+
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.keyLine,
+.keyBudget {
+  display: inline-block;
+  inline-size: 1rem;
+  block-size: 0;
+  margin-inline-end: var(--space-1);
+  vertical-align: middle;
+}
+
+.keyLine {
+  border-block-start: 3px solid var(--chart-2);
+}
+
+.keyBudget {
+  border-block-start: 2px dashed var(--color-text);
+}
+
+.message {
+  font-size: var(--text-sm);
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes series-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes marker-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}

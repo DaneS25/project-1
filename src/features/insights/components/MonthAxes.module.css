@@ -1,0 +1,24 @@
+/* Shared by the month-by-month charts (trend, category over time). */
+
+.toggle {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.gridLine {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.axisLabel,
+.monthLabel {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  fill: var(--color-text-muted);
+}
+
+/* The selected month's label is bold and in the main text colour. */
+.monthLabel[data-selected] {
+  font-weight: var(--weight-bold);
+  fill: var(--color-text);
+}

@@ -6,6 +6,7 @@ import { useAppData } from '@/shared/store/AppDataContext'
 import type { IsoDate } from '@/shared/types'
 import { spendingByCategory } from '../logic/insights'
 import { BudgetChart } from './BudgetChart'
+import { CategoryChart } from './CategoryChart'
 import { ChartCarousel, type ChartSlide } from './ChartCarousel'
 import { DonutChart } from './DonutChart'
 import { TrendChart } from './TrendChart'
@@ -15,14 +16,6 @@ type InsightsPanelProps = {
   /** Today's local date; Insights opens on its month. */
   today: IsoDate
 }
-
-/** The charts, in order. Task 31 replaces the placeholder content. */
-const CHART_TITLES = [
-  { id: 'breakdown', title: 'Where the money went' },
-  { id: 'trend', title: 'Spending trend' },
-  { id: 'budget', title: 'Budget vs actual' },
-  { id: 'category', title: 'Category over time' },
-] as const
 
 /**
  * Charts of the user's spending, with a month selector of its own (browsing
@@ -35,23 +28,36 @@ export function InsightsPanel({ today }: InsightsPanelProps) {
   const [month, setMonth] = useState(homeMonth)
   const breakdown = spendingByCategory(data, month)
 
-  const slides: ChartSlide[] = CHART_TITLES.map(({ id, title }) => ({
-    id,
-    title,
-    content:
-      id === 'breakdown' && breakdown.ok ? (
-        <DonutChart
-          breakdown={breakdown.value}
-          monthLabel={formatMonth(month)}
-        />
-      ) : id === 'trend' ? (
-        <TrendChart data={data} month={month} />
-      ) : id === 'budget' ? (
-        <BudgetChart data={data} month={month} />
-      ) : (
-        <p className={styles.placeholder}>This chart is coming soon.</p>
-      ),
-  }))
+  // The charts, in order; built only when the month can be charted.
+  const slides: ChartSlide[] = breakdown.ok
+    ? [
+        {
+          id: 'breakdown',
+          title: 'Where the money went',
+          content: (
+            <DonutChart
+              breakdown={breakdown.value}
+              monthLabel={formatMonth(month)}
+            />
+          ),
+        },
+        {
+          id: 'trend',
+          title: 'Spending trend',
+          content: <TrendChart data={data} month={month} />,
+        },
+        {
+          id: 'budget',
+          title: 'Budget vs actual',
+          content: <BudgetChart data={data} month={month} />,
+        },
+        {
+          id: 'category',
+          title: 'Category over time',
+          content: <CategoryChart data={data} month={month} />,
+        },
+      ]
+    : []
 
   return (
     <div className={styles.insights}>

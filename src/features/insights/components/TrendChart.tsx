@@ -1,11 +1,17 @@
 import { useState } from 'react'
-import { Button } from '@/shared/components/Button'
 import { formatMonth } from '@/shared/lib/dates'
 import { formatCents } from '@/shared/lib/money'
 import type { AppData, MonthKey } from '@/shared/types'
-import { formatAxisAmount } from '../logic/format'
 import { monthlyTotals } from '../logic/insights'
 import { budgetRuns, niceScale } from '../logic/trend'
+import {
+  AmountGrid,
+  HEIGHT,
+  MonthLabels,
+  WIDTH,
+  monthGeometry,
+} from './MonthAxes'
+import { RangeToggle, type ChartRange } from './RangeToggle'
 import styles from './TrendChart.module.css'
 
 type TrendChartProps = {
@@ -13,19 +19,6 @@ type TrendChartProps = {
   /** The selected month: the last bar, highlighted. */
   month: MonthKey
 }
-
-const RANGES = [6, 12] as const
-type Range = (typeof RANGES)[number]
-
-// Drawing area, in SVG units (the SVG scales to its width).
-const WIDTH = 360
-const HEIGHT = 200
-const LEFT = 52
-const RIGHT = 8
-const TOP = 10
-const BOTTOM = 26
-const PLOT_W = WIDTH - LEFT - RIGHT
-const PLOT_H = HEIGHT - TOP - BOTTOM
 
 /**
  * "Spending trend": total spending per month for the 6 or 12 months up to
@@ -35,26 +28,9 @@ const PLOT_H = HEIGHT - TOP - BOTTOM
  * same figures as text.
  */
 export function TrendChart({ data, month }: TrendChartProps) {
-  const [range, setRange] = useState<Range>(6)
+  const [range, setRange] = useState<ChartRange>(6)
   const result = monthlyTotals(data, month, range)
-
-  const toggle = (
-    <div className={styles.toggle} role="group" aria-label="Months shown">
-      {RANGES.map((value) => (
-        <Button
-          key={value}
-          variant="outline"
-          size="small"
-          aria-pressed={range === value}
-          onClick={() => {
-            setRange(value)
-          }}
-        >
-          {value} months
-        </Button>
-      ))}
-    </div>
-  )
+  const toggle = <RangeToggle range={range} onChange={setRange} />
 
   if (!result.ok) {
     return (
@@ -72,10 +48,9 @@ export function TrendChart({ data, month }: TrendChartProps) {
   const max = Math.max(...totals.flatMap((t) => [t.spentCents, t.budgetCents]))
   const scale = niceScale(max)
   // Geometry only: floats are fine from here on.
-  const slot = PLOT_W / totals.length
+  const geometry = monthGeometry(totals.length, scale)
+  const { slot, y, centreX, baseY } = geometry
   const barWidth = slot * 0.62
-  const y = (cents: number) => TOP + PLOT_H - (cents / scale.topCents) * PLOT_H
-  const centreX = (index: number) => LEFT + slot * index + slot / 2
   const label = `Spending trend for the ${String(range)} months to ${formatMonth(month)}`
 
   return (
@@ -87,26 +62,7 @@ export function TrendChart({ data, month }: TrendChartProps) {
         role="img"
         aria-label={`${label}. The table that follows lists each month.`}
       >
-        {scale.ticks.map((tick) => (
-          <g key={tick}>
-            <line
-              className={styles.gridLine}
-              x1={LEFT}
-              x2={WIDTH - RIGHT}
-              y1={y(tick)}
-              y2={y(tick)}
-            />
-            <text
-              className={styles.axisLabel}
-              x={LEFT - 6}
-              y={y(tick)}
-              dy="0.32em"
-              textAnchor="end"
-            >
-              {formatAxisAmount(tick)}
-            </text>
-          </g>
-        ))}
+        <AmountGrid scale={scale} geometry={geometry} />
         <g key={range} className={styles.bars}>
           {totals.map((total, index) => {
             const isSelected = total.month === month
@@ -120,7 +76,7 @@ export function TrendChart({ data, month }: TrendChartProps) {
                 x={centreX(index) - barWidth / 2}
                 y={top}
                 width={barWidth}
-                height={TOP + PLOT_H - top}
+                height={baseY - top}
               />
             )
           })}
@@ -151,20 +107,11 @@ export function TrendChart({ data, month }: TrendChartProps) {
             />
           )
         })}
-        {totals.map((total, index) =>
-          range === 12 && index % 2 === 1 && total.month !== month ? null : (
-            <text
-              key={total.month}
-              className={styles.monthLabel}
-              data-selected={total.month === month || undefined}
-              x={centreX(index)}
-              y={HEIGHT - 8}
-              textAnchor="middle"
-            >
-              {shortMonth(total.month)}
-            </text>
-          ),
-        )}
+        <MonthLabels
+          months={totals.map((total) => total.month)}
+          selected={month}
+          geometry={geometry}
+        />
       </svg>
       <p className={styles.key} aria-hidden="true">
         <span className={styles.keyBar} /> Spent
@@ -198,10 +145,4 @@ export function TrendChart({ data, month }: TrendChartProps) {
       </table>
     </div>
   )
-}
-
-/** "Oct", "Jan '27" (the year is added in January, so a long range reads). */
-function shortMonth(month: MonthKey): string {
-  const name = formatMonth(month).slice(0, 3)
-  return month.endsWith('-01') ? `${name} '${month.slice(2, 4)}` : name
 }

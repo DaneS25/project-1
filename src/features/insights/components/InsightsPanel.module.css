@@ -3,10 +3,6 @@
   gap: var(--space-4);
 }
 
-.placeholder {
-  color: var(--color-text-muted);
-}
-
 .error {
   padding: var(--space-4);
   font-size: var(--text-sm);
