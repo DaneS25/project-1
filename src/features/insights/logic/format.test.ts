@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatPercentChange, formatShare } from './format'
+import { formatChangeAmount, formatPercentChange, formatShare } from './format'
 
 describe('formatShare', () => {
   it.each([
@@ -46,5 +46,15 @@ describe('formatPercentChange', () => {
 
   it('gives no percentage when the previous month had no spending', () => {
     expect(formatPercentChange(500, 0)).toBeNull()
+  })
+})
+
+describe('formatChangeAmount', () => {
+  it.each([
+    [5000, 'Up $50.00'],
+    [-1250, 'Down $12.50'],
+    [0, 'No change'],
+  ])('describes a change of %i cents as %s', (change, text) => {
+    expect(formatChangeAmount(change)).toBe(text)
   })
 })

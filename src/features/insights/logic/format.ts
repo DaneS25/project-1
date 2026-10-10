@@ -52,3 +52,13 @@ export function formatAxisAmount(cents: Cents): string {
   if (cents % 100 !== 0) return formatCents(cents)
   return wholeDollars.format(cents / 100)
 }
+
+/**
+ * A month-over-month change in words, so the direction never depends on
+ * colour: "Up $50.00", "Down $12.50" or "No change".
+ */
+export function formatChangeAmount(changeCents: Cents): string {
+  if (changeCents === 0) return 'No change'
+  const amount = formatCents(Math.abs(changeCents))
+  return changeCents > 0 ? `Up ${amount}` : `Down ${amount}`
+}
