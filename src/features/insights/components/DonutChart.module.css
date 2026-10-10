@@ -1,0 +1,105 @@
+.chart {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.donut {
+  position: relative;
+  justify-self: center;
+  inline-size: min(100%, 12rem);
+  aspect-ratio: 1;
+}
+
+.svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Slice colours come from --chart-1 to --chart-6 (set inline). */
+.slice {
+  fill: none;
+  stroke-width: 14;
+  transform-origin: 50px 50px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+
+  &[data-state='dimmed'] {
+    opacity: 0.3;
+  }
+
+  &[data-state='active'] {
+    transform: scale(1.04);
+  }
+}
+
+.centre {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.centreLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.centreAmount {
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.legend {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-sm);
+
+  &[data-state='active'] {
+    background: var(--color-accent-soft);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color var(--dur-fast) var(--ease-out);
+  }
+}
+
+.swatch {
+  inline-size: 0.75rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.name {
+  overflow-wrap: anywhere;
+}
+
+.amount,
+.share {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.share {
+  min-inline-size: 3.5ch;
+  color: var(--color-text-muted);
+}

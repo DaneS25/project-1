@@ -150,6 +150,19 @@
     )
   );
 
+  /*
+   * Chart colours, stepping along the sunset: sky, dusk blue, violet, rose,
+   * orange, gold. Lightness alternates so neighbouring slices differ. Each
+   * is at least 3.88:1 (light) and 5.70:1 (dark) against the card and the
+   * surface, and at least 0.11 OKLab from the over-budget red.
+   */
+  --chart-1: light-dark(oklch(56% 0.11 215), oklch(80% 0.11 215));
+  --chart-2: light-dark(oklch(46% 0.14 258), oklch(68% 0.14 258));
+  --chart-3: light-dark(oklch(55% 0.13 300), oklch(79% 0.13 300));
+  --chart-4: light-dark(oklch(47% 0.14 335), oklch(69% 0.14 335));
+  --chart-5: light-dark(oklch(56% 0.14 55), oklch(78% 0.14 55));
+  --chart-6: light-dark(oklch(50% 0.13 85), oklch(72% 0.13 85));
+
   /* Derived tints (decorative only, never carry text contrast) */
   --color-accent-soft: color-mix(
     in oklch,
