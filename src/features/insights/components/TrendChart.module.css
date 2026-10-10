@@ -1,0 +1,106 @@
+.trend {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.toggle {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.svg {
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.gridLine {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.axisLabel,
+.monthLabel {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  fill: var(--color-text-muted);
+}
+
+/* The selected month's label is bold and in the main text colour. */
+.monthLabel[data-selected] {
+  font-weight: var(--weight-bold);
+  fill: var(--color-text);
+}
+
+.bar {
+  fill: var(--chart-2);
+  transform-box: fill-box;
+  transform-origin: bottom;
+
+  /* Selected: orange, and outlined, so it doesn't rely on colour alone. */
+  &[data-selected] {
+    fill: var(--color-accent);
+    stroke: var(--color-text);
+    stroke-width: 2;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: bar-rise var(--dur-base) var(--ease-out) both;
+  }
+}
+
+.budgetLine {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+  stroke-linecap: round;
+}
+
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.keyBar,
+.keyLine {
+  display: inline-block;
+  inline-size: 1rem;
+  margin-inline-end: var(--space-1);
+  vertical-align: middle;
+}
+
+.keyBar {
+  block-size: 0.75rem;
+  background: var(--chart-2);
+  border-radius: 2px;
+}
+
+.keyLine {
+  block-size: 0;
+  border-block-start: 2px dashed var(--color-text);
+}
+
+.message {
+  font-size: var(--text-sm);
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes bar-rise {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+}
