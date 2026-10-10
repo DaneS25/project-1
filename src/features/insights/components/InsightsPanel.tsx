@@ -9,6 +9,7 @@ import { BudgetChart } from './BudgetChart'
 import { CategoryChart } from './CategoryChart'
 import { ChartCarousel, type ChartSlide } from './ChartCarousel'
 import { DonutChart } from './DonutChart'
+import { StatsStrip } from './StatsStrip'
 import { TrendChart } from './TrendChart'
 import styles from './InsightsPanel.module.css'
 
@@ -62,6 +63,7 @@ export function InsightsPanel({ today }: InsightsPanelProps) {
   return (
     <div className={styles.insights}>
       <MonthNav month={month} homeMonth={homeMonth} onChange={setMonth} />
+      {breakdown.ok && <StatsStrip data={data} month={month} />}
       {!breakdown.ok ? (
         <p className={styles.error}>
           The totals for {formatMonth(month)} are too large to chart. Check for
