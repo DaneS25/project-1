@@ -1,0 +1,104 @@
+/* Shared by the charts: summary, tooltip, "Show as table" and the table. */
+
+.summary {
+  font-size: var(--text-sm);
+}
+
+/* The chart and its tooltip; the tooltip is positioned against this box. */
+.area {
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 1;
+  inline-size: max-content;
+  max-inline-size: min(14rem, 80cqi);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+
+  /* Above the item, with a small gap, never over it. */
+  --gap: 6px;
+
+  transform: translate(-50%, calc(-100% - var(--gap)));
+
+  &[data-flush] {
+    --gap: 0px;
+  }
+
+  &[data-align='start'] {
+    transform: translate(-1rem, calc(-100% - var(--gap)));
+  }
+
+  &[data-align='end'] {
+    transform: translate(calc(-100% + 1rem), calc(-100% - var(--gap)));
+  }
+}
+
+.tooltipLine {
+  display: block;
+
+  & strong {
+    font-weight: var(--weight-semibold);
+  }
+}
+
+.tableToggle {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+}
+
+/* A wide table scrolls inside the card rather than widening the page. */
+.tableWrap {
+  inline-size: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  inline-size: 100%;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  border-collapse: collapse;
+
+  & caption {
+    padding-block-end: var(--space-1);
+    color: var(--color-text-muted);
+    text-align: start;
+  }
+
+  & th,
+  & td {
+    padding: var(--space-1) var(--space-2);
+    text-align: end;
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  & th:first-child {
+    text-align: start;
+  }
+
+  & thead th {
+    font-weight: var(--weight-semibold);
+  }
+
+  & tbody th {
+    font-weight: normal;
+  }
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

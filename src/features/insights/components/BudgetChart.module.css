@@ -2,6 +2,7 @@
   display: grid;
   gap: var(--space-3);
   margin: 0;
+  container-type: inline-size;
 }
 
 .rows {
@@ -55,20 +56,41 @@
 /* Outline in the text colour: about 15:1 against the card. */
 .budgetBar {
   border: 2px solid var(--color-text);
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: bar-fade var(--dur-base) var(--ease-out) both;
-  }
 }
 
 /* Dusk blue: 6.38:1 (light) / 6.09:1 (dark) against the card. */
 .spentBar {
   min-inline-size: 3px;
   background: var(--chart-2);
-  transform-origin: left center;
+}
 
-  @media (prefers-reduced-motion: no-preference) {
-    animation: bar-grow var(--dur-base) var(--ease-out) both;
+.budgetBar,
+.spentBar {
+  transform-origin: left center;
+}
+
+/*
+ * Both bars grow from the start edge the first time the chart is seen.
+ * Transform only; the outline's border stretches briefly while it grows.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .chart:not([data-seen]) :is(.budgetBar, .spentBar) {
+    transform: scaleX(0);
+  }
+
+  .chart[data-seen] :is(.budgetBar, .spentBar) {
+    animation: bar-grow var(--dur-base) var(--ease-out);
+  }
+}
+
+/* On a narrow card the amounts go under the name. */
+@container (inline-size < 18rem) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .amounts {
+    text-align: start;
   }
 }
 
@@ -105,13 +127,6 @@
 
 @keyframes bar-grow {
   from {
-    opacity: 0;
     transform: scaleX(0);
-  }
-}
-
-@keyframes bar-fade {
-  from {
-    opacity: 0;
   }
 }
