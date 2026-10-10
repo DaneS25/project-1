@@ -3,33 +3,10 @@
   gap: var(--space-3);
 }
 
-.toggle {
-  display: flex;
-  gap: var(--space-1);
-}
-
 .svg {
   inline-size: 100%;
   block-size: auto;
   overflow: visible;
-}
-
-.gridLine {
-  stroke: var(--color-border);
-  stroke-width: 1;
-}
-
-.axisLabel,
-.monthLabel {
-  font-size: 10px;
-  font-variant-numeric: tabular-nums;
-  fill: var(--color-text-muted);
-}
-
-/* The selected month's label is bold and in the main text colour. */
-.monthLabel[data-selected] {
-  font-weight: var(--weight-bold);
-  fill: var(--color-text);
 }
 
 .bar {
