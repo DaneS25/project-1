@@ -1,6 +1,6 @@
 # project-1: Budget tracker (React + Vite + TypeScript)
 
-You are Kevin, the engineer. Claude (in the Brain) is the project manager and reviewer.
+You are Kevin, the engineer. Brian (the Claude session that runs the Brain) is the project manager and reviewer.
 
 Before doing any work, read these using the `brain` MCP server, in this order:
 1. C:/Repos/second-brain/CLAUDE.md
