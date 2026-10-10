@@ -65,6 +65,23 @@ a {
   border-radius: var(--radius-sm);
 }
 
+/*
+ * The ring eases in by fading its colour from transparent: nothing moves,
+ * and it ends at the same colour and contrast. With reduced motion there's
+ * no animation, so it's fully visible at once.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :focus-visible {
+    animation: focus-ring-in var(--dur-fast) var(--ease-out);
+  }
+}
+
+@keyframes focus-ring-in {
+  from {
+    outline-color: transparent;
+  }
+}
+
 ::selection {
   background: color-mix(in oklch, var(--color-accent) 30%, transparent);
 }

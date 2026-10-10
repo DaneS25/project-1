@@ -44,6 +44,10 @@
   &:has(:focus-visible) {
     outline: 3px solid var(--color-focus);
     outline-offset: 2px;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: focus-ring-in var(--dur-fast) var(--ease-out);
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -105,5 +109,12 @@
   from {
     opacity: 0;
     transform: rotate(-45deg) scale(0.6);
+  }
+}
+
+/* Same ring fade as the global :focus-visible (keyframes are per module). */
+@keyframes focus-ring-in {
+  from {
+    outline-color: transparent;
   }
 }

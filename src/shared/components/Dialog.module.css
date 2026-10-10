@@ -12,32 +12,51 @@
     background: color-mix(in oklch, var(--color-shadow) 45%, transparent);
   }
 
+  /*
+   * Open and close as transitions: @starting-style gives the open state a
+   * starting point, and allow-discrete keeps the dialog (display, top layer)
+   * on screen while it fades out. Opacity and transform only, and none of
+   * it with reduced motion, where the dialog simply appears.
+   */
   @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      overlay var(--dur-base) var(--ease-out) allow-discrete,
+      display var(--dur-base) var(--ease-out) allow-discrete;
+
     &[open] {
-      animation: dialog-in var(--dur-base) var(--ease-out);
+      opacity: 1;
+      transform: none;
+
+      @starting-style {
+        opacity: 0;
+        transform: translateY(0.5rem) scale(0.98);
+      }
+    }
+
+    &::backdrop {
+      opacity: 0;
+      transition:
+        opacity var(--dur-base) var(--ease-out),
+        overlay var(--dur-base) var(--ease-out) allow-discrete,
+        display var(--dur-base) var(--ease-out) allow-discrete;
     }
 
     &[open]::backdrop {
-      animation: backdrop-in var(--dur-base) var(--ease-out);
+      opacity: 1;
+
+      @starting-style {
+        opacity: 0;
+      }
     }
   }
 }
 
 .title {
   font-size: var(--text-xl);
-}
-
-@keyframes dialog-in {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem) scale(0.98);
-  }
-}
-
-@keyframes backdrop-in {
-  from {
-    opacity: 0;
-  }
 }
 
 .message {

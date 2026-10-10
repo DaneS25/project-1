@@ -34,8 +34,22 @@
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 
-  &:hover {
-    border-color: color-mix(in oklch, var(--color-text-muted) 45%, transparent);
+  /*
+   * A soft sunset glow on pointer hover. Static (not transitioned): only
+   * the border colour eases, so nothing animates a box-shadow.
+   */
+  @media (hover: hover) {
+    &:hover {
+      border-color: color-mix(
+        in oklch,
+        var(--color-text-muted) 45%,
+        transparent
+      );
+      box-shadow:
+        var(--shadow-sm),
+        0 0 0 3px
+          color-mix(in oklch, var(--color-accent-glint) 30%, transparent);
+    }
   }
 
   &[aria-invalid='true'] {
