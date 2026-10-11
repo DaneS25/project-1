@@ -7,16 +7,21 @@
     <meta name="color-scheme" content="light dark" />
     <title>Budget</title>
     <script>
-      // Apply a saved Light or Dark theme before the first paint, so there's
-      // no flash of the wrong theme. The one place storage is read outside
-      // src/shared/storage/; the key and values match theme.ts there.
+      // Apply a saved Light or Dark theme and the pink palette before the
+      // first paint, so there's no flash of the wrong look. The one place
+      // storage is read outside src/shared/storage/; the keys and values
+      // match theme.ts and palette.ts there.
       try {
         var theme = localStorage.getItem('budget-app:theme')
         if (theme === 'light' || theme === 'dark') {
           document.documentElement.dataset.theme = theme
         }
+        var palette = localStorage.getItem('budget-app:palette')
+        if (palette === 'pink') {
+          document.documentElement.dataset.palette = palette
+        }
       } catch (error) {
-        // Storage is blocked: leave the theme on System.
+        // Storage is blocked: leave System and the sunset palette.
       }
     </script>
   </head>

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import styles from './AppShell.module.css'
+import { PaletteToggle } from './PaletteToggle'
 import { ThemeToggle } from './ThemeToggle'
 
 type AppShellProps = {
@@ -41,6 +42,7 @@ export function AppShell({ children }: AppShellProps) {
           </div>
           <div className={styles.headerEnd}>
             <ThemeToggle />
+            <PaletteToggle />
           </div>
         </div>
       </header>
