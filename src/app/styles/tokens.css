@@ -24,11 +24,15 @@
   /*
    * Sunset palette: sky blue, a peach and gold midpoint, burnt orange; the
    * dusk version is navy, a dusky rose and ember. The themed colours below
-   * are derived from these three.
+   * are derived from these three and the two neutral tint hues. This is the
+   * palette layer that [data-palette='pink'] redefines (end of file).
    */
   --sunset-sky: light-dark(oklch(84% 0.08 232), oklch(30% 0.08 262));
   --sunset-peach: light-dark(oklch(88% 0.09 68), oklch(45% 0.1 350));
   --sunset-ember: light-dark(oklch(64% 0.17 48), oklch(66% 0.16 50));
+  /* Hues of the near-neutrals: warm for light surfaces, cool for text and dark. */
+  --tint-warm: 80;
+  --tint-cool: 265;
 
   /*
    * Text must not sit on the raw gradient without a tested overlay. The
@@ -59,23 +63,53 @@
 
   /* Colour: light value first, dark value second */
   --color-bg: light-dark(
-    color-mix(in oklch, var(--sunset-peach) 12%, oklch(99% 0.003 80)),
-    color-mix(in oklch, var(--sunset-sky) 40%, oklch(14% 0.01 265))
+    color-mix(
+      in oklch,
+      var(--sunset-peach) 12%,
+      oklch(99% 0.003 var(--tint-warm))
+    ),
+    color-mix(in oklch, var(--sunset-sky) 40%, oklch(14% 0.01 var(--tint-cool)))
   );
   --color-surface: light-dark(
     oklch(100% 0 0),
-    color-mix(in oklch, var(--sunset-sky) 30%, oklch(20% 0.012 265))
+    color-mix(
+      in oklch,
+      var(--sunset-sky) 30%,
+      oklch(20% 0.012 var(--tint-cool))
+    )
   );
   --color-surface-sunken: light-dark(
-    color-mix(in oklch, var(--sunset-sky) 14%, oklch(97.5% 0.004 80)),
-    color-mix(in oklch, var(--sunset-sky) 30%, oklch(17.5% 0.012 265))
+    color-mix(
+      in oklch,
+      var(--sunset-sky) 14%,
+      oklch(97.5% 0.004 var(--tint-warm))
+    ),
+    color-mix(
+      in oklch,
+      var(--sunset-sky) 30%,
+      oklch(17.5% 0.012 var(--tint-cool))
+    )
   );
   --color-border: light-dark(
-    color-mix(in oklch, var(--sunset-sky) 25%, oklch(90% 0.006 80)),
-    color-mix(in oklch, var(--sunset-sky) 40%, oklch(30% 0.015 265))
+    color-mix(
+      in oklch,
+      var(--sunset-sky) 25%,
+      oklch(90% 0.006 var(--tint-warm))
+    ),
+    color-mix(
+      in oklch,
+      var(--sunset-sky) 40%,
+      oklch(30% 0.015 var(--tint-cool))
+    )
   );
-  --color-text: light-dark(oklch(21% 0.025 265), oklch(95% 0.008 265));
-  --color-text-muted: light-dark(oklch(47% 0.025 265), oklch(73% 0.02 265));
+  --color-text: light-dark(
+    oklch(21% 0.025 var(--tint-cool)),
+    oklch(95% 0.008 var(--tint-cool))
+  );
+  --color-text-muted: light-dark(
+    oklch(47% 0.025 var(--tint-cool)),
+    oklch(73% 0.02 var(--tint-cool))
+  );
   /* Burnt orange: white text on it is 6.2:1, dark text 8.6:1. */
   --color-accent: light-dark(
     color-mix(in oklch, var(--sunset-ember) 78%, black),
@@ -94,7 +128,7 @@
     color-mix(in oklch, var(--sunset-sky) 40%, oklch(30% 0.12 250)),
     color-mix(in oklch, var(--sunset-sky) 20%, oklch(86% 0.09 225))
   );
-  --color-shadow: light-dark(oklch(30% 0.04 265), oklch(0% 0 0));
+  --color-shadow: light-dark(oklch(30% 0.04 var(--tint-cool)), oklch(0% 0 0));
 
   /*
    * A deeper blue for the start of the primary-button gradient, so the
@@ -226,6 +260,60 @@
   --dur-fast: 150ms;
   --dur-base: 250ms;
   --dur-slow: 400ms;
+}
+
+/*
+ * Pink palette (task 35): pastel blush, lilac and rose; the dark version is
+ * deep plum, berry and pastel pink. Set by data-palette='pink' on <html>
+ * and independent of data-theme, so light-dark() above still picks the
+ * scheme. Redefining the palette layer re-derives the surfaces, text,
+ * accent, both sunset gradients, the page wash, progress bars and the flare.
+ * Only tokens with fixed sunset hues are overridden. Every text pair is
+ * WCAG 2.2 AA in pink light and dark; ratios are in decisions.md (task 35).
+ */
+:root[data-palette='pink'] {
+  --sunset-sky: light-dark(oklch(88% 0.06 350), oklch(30% 0.08 335));
+  --sunset-peach: light-dark(oklch(87% 0.06 315), oklch(44% 0.1 315));
+  --sunset-ember: light-dark(oklch(64% 0.17 352), oklch(78% 0.12 350));
+  --tint-warm: 345;
+  --tint-cool: 345;
+
+  /* White-pink panels; the dark value is the same formula as sunset's. */
+  --color-surface: light-dark(
+    oklch(98.8% 0.006 350),
+    color-mix(
+      in oklch,
+      var(--sunset-sky) 30%,
+      oklch(20% 0.012 var(--tint-cool))
+    )
+  );
+  /*
+   * Over budget stays red, nudged to a pure red (hue 27) so it sits further
+   * from the rose accent (0.12 OKLab light, 0.19 dark); it keeps its icon
+   * and words.
+   */
+  --color-danger: light-dark(oklch(50% 0.2 27), oklch(70% 0.18 27));
+  /* A violet ring stands out against the rose buttons. */
+  --color-focus: light-dark(oklch(42% 0.15 300), oklch(84% 0.07 290));
+  /* Berry (light) or lilac (dark) start of the button and progress gradients. */
+  --color-accent-cool: light-dark(oklch(44% 0.13 320), oklch(84% 0.08 315));
+  --color-accent-glint: light-dark(
+    color-mix(in oklch, var(--color-accent) 85%, var(--sunset-peach)),
+    color-mix(in oklch, var(--color-accent) 85%, oklch(90% 0.06 315))
+  );
+
+  /*
+   * Chart colours: lilac, berry, periwinkle, mint, peach, olive gold, with
+   * alternating lightness. At least 3.81:1 (light) and 6.35:1 (dark) against
+   * the card and the page, at least 0.10 OKLab apart from each other and at
+   * least 0.12 from the over-budget red.
+   */
+  --chart-1: light-dark(oklch(60% 0.12 305), oklch(82% 0.1 305));
+  --chart-2: light-dark(oklch(50% 0.15 345), oklch(72% 0.14 345));
+  --chart-3: light-dark(oklch(48% 0.13 260), oklch(70% 0.12 260));
+  --chart-4: light-dark(oklch(56% 0.11 165), oklch(82% 0.12 165));
+  --chart-5: light-dark(oklch(60% 0.12 55), oklch(80% 0.11 55));
+  --chart-6: light-dark(oklch(50% 0.1 100), oklch(74% 0.11 100));
 }
 
 /* Reduced motion: collapse duration tokens so token-driven motion is instant. */
