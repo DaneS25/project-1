@@ -1,3 +1,4 @@
+import { CategoryName } from '@/shared/components/CategoryName'
 import { useId, type PointerEvent } from 'react'
 import { useFirstView } from '@/shared/hooks/useFirstView'
 import { formatCents } from '@/shared/lib/money'
@@ -151,7 +152,12 @@ export function DonutChart({ breakdown, monthLabel }: DonutChartProps) {
                 style={{ background: sliceColour(index) }}
                 aria-hidden="true"
               />
-              <span className={styles.name}>{item.category.name}</span>
+              <span className={styles.name}>
+                <CategoryName
+                  name={item.category.name}
+                  emoji={item.category.emoji}
+                />
+              </span>
               <span className={styles.amount}>
                 {formatCents(item.spentCents)}
               </span>
@@ -175,7 +181,12 @@ export function DonutChart({ breakdown, monthLabel }: DonutChartProps) {
           <tbody>
             {items.map((item) => (
               <tr key={item.category.id}>
-                <th scope="row">{item.category.name}</th>
+                <th scope="row">
+                  <CategoryName
+                    name={item.category.name}
+                    emoji={item.category.emoji}
+                  />
+                </th>
                 <td>{formatCents(item.spentCents)}</td>
                 <td>{formatShare(item.spentCents, totalCents)}</td>
               </tr>

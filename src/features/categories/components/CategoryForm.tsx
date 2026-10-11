@@ -5,6 +5,7 @@ import { useFormDraft } from '@/shared/hooks/useFormDraft'
 import { useAppData } from '@/shared/store/AppDataContext'
 import { describeBudget } from '../logic/budgetText'
 import {
+  EMPTY_CATEGORY_DRAFT,
   validateCategoryDraft,
   type CategoryDraft,
 } from '../logic/categoryDraft'
@@ -16,7 +17,7 @@ type Outcome =
 /** Form for adding a category with an optional monthly budget. */
 export function CategoryForm() {
   const { data, addCategory } = useAppData()
-  const form = useFormDraft<CategoryDraft>({ name: '', budget: '' })
+  const form = useFormDraft<CategoryDraft>(EMPTY_CATEGORY_DRAFT)
   const [outcome, setOutcome] = useState<Outcome>({ kind: 'idle' })
 
   function handleChange(field: keyof CategoryDraft, value: string) {
@@ -39,7 +40,7 @@ export function CategoryForm() {
       setOutcome({ kind: 'rejected' })
       return
     }
-    form.setDraft({ name: '', budget: '' })
+    form.setDraft(EMPTY_CATEGORY_DRAFT)
     setOutcome({
       kind: 'added',
       message: `Added ${category.name} with ${describeBudget(category.monthlyBudgetCents)}.`,

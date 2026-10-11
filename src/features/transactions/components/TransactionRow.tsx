@@ -1,3 +1,4 @@
+import { CategoryName } from '@/shared/components/CategoryName'
 import { formatIsoDate } from '@/shared/lib/dates'
 import { Button } from '@/shared/components/Button'
 import { formatCents } from '@/shared/lib/money'
@@ -7,6 +8,8 @@ import styles from './TransactionList.module.css'
 type TransactionRowProps = {
   transaction: Transaction
   categoryName: string
+  /** The category's emoji, shown before its name (decorative). */
+  categoryEmoji?: string | undefined
   /** Receive the buttons so the list can return focus to them. */
   editButtonRef: (button: HTMLButtonElement | null) => void
   deleteButtonRef: (button: HTMLButtonElement | null) => void
@@ -25,6 +28,7 @@ type TransactionRowProps = {
 export function TransactionRow({
   transaction,
   categoryName,
+  categoryEmoji,
   editButtonRef,
   deleteButtonRef,
   onEdit,
@@ -49,7 +53,9 @@ export function TransactionRow({
       }}
     >
       <div className={styles.details}>
-        <p className={styles.category}>{categoryName}</p>
+        <p className={styles.category}>
+          <CategoryName name={categoryName} emoji={categoryEmoji} />
+        </p>
         {transaction.note && <p className={styles.note}>{transaction.note}</p>}
         <time className={styles.date} dateTime={transaction.date}>
           {date}

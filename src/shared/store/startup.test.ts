@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { saveData, STORAGE_KEY } from '@/shared/storage/storage'
 import type { AppData } from '@/shared/types'
-import { DEFAULT_CATEGORY_NAMES } from './defaultData'
+import { DEFAULT_CATEGORIES } from './defaultData'
 import { loadStartup } from './startup'
 import { createTestIds, createTestStorage } from './testStorage'
 
@@ -29,9 +29,10 @@ describe('loadStartup', () => {
     expect(startup.status).toBe('empty')
     expect(startup.data.transactions).toEqual([])
     expect(startup.data.categories).toEqual(
-      DEFAULT_CATEGORY_NAMES.map((name, index) => ({
+      DEFAULT_CATEGORIES.map(({ name, emoji }, index) => ({
         id: `id-${String(index + 1)}`,
         name,
+        emoji,
         monthlyBudgetCents: 0,
       })),
     )
@@ -44,7 +45,7 @@ describe('loadStartup', () => {
     const startup = loadStartup(storage, createTestIds())
 
     expect(startup).toMatchObject({ status: 'corrupt', raw: '{not json' })
-    expect(startup.data.categories).toHaveLength(DEFAULT_CATEGORY_NAMES.length)
+    expect(startup.data.categories).toHaveLength(DEFAULT_CATEGORIES.length)
   })
 
   it('seeds defaults when storage is unavailable', () => {
@@ -53,6 +54,6 @@ describe('loadStartup', () => {
     const startup = loadStartup(storage, createTestIds())
 
     expect(startup.status).toBe('unavailable')
-    expect(startup.data.categories).toHaveLength(DEFAULT_CATEGORY_NAMES.length)
+    expect(startup.data.categories).toHaveLength(DEFAULT_CATEGORIES.length)
   })
 })

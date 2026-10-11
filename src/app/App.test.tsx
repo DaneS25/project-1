@@ -51,7 +51,12 @@ describe('App', () => {
     render(<App today="2026-10-09" />)
 
     await userEvent.type(screen.getByLabelText('Amount'), '12.50')
-    await userEvent.selectOptions(screen.getByLabelText('Category'), 'Rent')
+    await userEvent.selectOptions(
+      screen.getByLabelText('Category'),
+      within(screen.getByLabelText('Category')).getByRole('option', {
+        name: 'Rent',
+      }),
+    )
     await userEvent.click(
       screen.getByRole('button', { name: 'Add transaction' }),
     )
@@ -70,7 +75,12 @@ describe('App', () => {
     )
 
     await userEvent.type(form.getByLabelText('Amount'), '40')
-    await userEvent.selectOptions(form.getByLabelText('Category'), 'Transport')
+    await userEvent.selectOptions(
+      form.getByLabelText('Category'),
+      within(form.getByLabelText('Category')).getByRole('option', {
+        name: 'Transport',
+      }),
+    )
     await userEvent.click(form.getByRole('button', { name: 'Add transaction' }))
 
     const list = within(screen.getByRole('region', { name: 'Transactions' }))
@@ -119,7 +129,12 @@ describe('App', () => {
     )
 
     await userEvent.type(form.getByLabelText('Amount'), '40')
-    await userEvent.selectOptions(form.getByLabelText('Category'), 'Transport')
+    await userEvent.selectOptions(
+      form.getByLabelText('Category'),
+      within(form.getByLabelText('Category')).getByRole('option', {
+        name: 'Transport',
+      }),
+    )
     await userEvent.click(form.getByRole('button', { name: 'Add transaction' }))
 
     expect(summary.getByText('Transport').closest('li')).toHaveTextContent(

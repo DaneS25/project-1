@@ -20,7 +20,7 @@ type EditCategoryDialogProps = {
 }
 
 /**
- * A modal form for renaming a category or changing its budget. A budget
+ * A modal form for renaming a category or changing its budget or emoji. A budget
  * of zero shows as a blank field, matching "leave blank for no budget".
  */
 export function EditCategoryDialog({
@@ -35,6 +35,7 @@ export function EditCategoryDialog({
       category.monthlyBudgetCents === 0
         ? ''
         : centsToAmountInput(category.monthlyBudgetCents),
+    emoji: category.emoji ?? '',
   })
   const [isRejected, setIsRejected] = useState(false)
   const { dialogRef, closeThen } = useModalDialog()

@@ -117,3 +117,57 @@ describe('CategoryForm', () => {
     expect(budgetInput()).toHaveFocus()
   })
 })
+
+describe('CategoryForm emoji picker', () => {
+  it('offers a group of named emojis with None chosen by default', () => {
+    renderForm()
+
+    const group = screen.getByRole('group', { name: 'Emoji (optional)' })
+    expect(screen.getByRole('radio', { name: 'None' })).toBeChecked()
+    expect(
+      screen.getByRole('radio', { name: 'Shopping cart' }),
+    ).not.toBeChecked()
+    expect(
+      group.querySelectorAll('[aria-hidden="true"]').length,
+    ).toBeGreaterThan(0)
+  })
+
+  it('adds a category with the picked emoji and resets the picker', async () => {
+    const { storage, items } = createTestStorage()
+    renderForm(storage)
+
+    await userEvent.type(nameInput(), 'Fuel')
+    await userEvent.click(screen.getByRole('radio', { name: 'Fuel pump' }))
+    await submit()
+
+    expect(storedData(items)).toMatchObject({
+      data: {
+        categories: [{}, {}, {}, {}, {}, {}, { name: 'Fuel', emoji: '⛽' }],
+      },
+    })
+    expect(screen.getByRole('radio', { name: 'None' })).toBeChecked()
+  })
+
+  it('adds a category with no emoji when None stays chosen', async () => {
+    const { storage, items } = createTestStorage()
+    renderForm(storage)
+
+    await userEvent.type(nameInput(), 'Fuel')
+    await submit()
+
+    const data = storedData(items)
+    expect(data).toMatchObject({
+      data: { categories: [{}, {}, {}, {}, {}, {}, { name: 'Fuel' }] },
+    })
+    expect(JSON.stringify(data)).not.toContain('"name":"Fuel","emoji"')
+  })
+
+  it('lets the emoji be chosen with the arrow keys', async () => {
+    renderForm()
+
+    await userEvent.click(screen.getByRole('radio', { name: 'None' }))
+    await userEvent.keyboard('{ArrowRight}')
+
+    expect(screen.getByRole('radio', { name: 'Shopping cart' })).toBeChecked()
+  })
+})

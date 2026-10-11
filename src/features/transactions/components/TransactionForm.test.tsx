@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CURRENT_VERSION } from '@/shared/storage/migrations'
@@ -42,7 +42,10 @@ describe('TransactionForm', () => {
     renderForm(storage)
 
     await userEvent.type(amountInput(), '12.5')
-    await userEvent.selectOptions(categorySelect(), 'Groceries')
+    await userEvent.selectOptions(
+      categorySelect(),
+      within(categorySelect()).getByRole('option', { name: 'Groceries' }),
+    )
     await userEvent.type(noteInput(), 'Weekly shop')
     await submit()
 
@@ -60,14 +63,17 @@ describe('TransactionForm', () => {
     renderForm()
 
     await userEvent.type(amountInput(), '8')
-    await userEvent.selectOptions(categorySelect(), 'Transport')
+    await userEvent.selectOptions(
+      categorySelect(),
+      within(categorySelect()).getByRole('option', { name: 'Transport' }),
+    )
     await userEvent.type(noteInput(), 'Bus')
     await submit()
 
     expect(amountInput()).toHaveValue('')
     expect(noteInput()).toHaveValue('')
     expect(dateInput()).toHaveValue(TODAY)
-    expect(categorySelect()).toHaveDisplayValue('Transport')
+    expect(categorySelect()).toHaveDisplayValue('🚌 Transport')
     expect(amountInput()).toHaveFocus()
   })
 
@@ -75,7 +81,10 @@ describe('TransactionForm', () => {
     renderForm()
 
     await userEvent.type(amountInput(), '12.50')
-    await userEvent.selectOptions(categorySelect(), 'Groceries')
+    await userEvent.selectOptions(
+      categorySelect(),
+      within(categorySelect()).getByRole('option', { name: 'Groceries' }),
+    )
     await submit()
     await userEvent.type(amountInput(), '1')
 
@@ -85,7 +94,10 @@ describe('TransactionForm', () => {
   it('shows the confirmation afresh when the same add is repeated', async () => {
     renderForm()
     await userEvent.type(amountInput(), '12.50')
-    await userEvent.selectOptions(categorySelect(), 'Groceries')
+    await userEvent.selectOptions(
+      categorySelect(),
+      within(categorySelect()).getByRole('option', { name: 'Groceries' }),
+    )
     await submit()
 
     await userEvent.type(amountInput(), '12.50')
@@ -125,7 +137,10 @@ describe('TransactionForm', () => {
     renderForm()
 
     await userEvent.type(amountInput(), '0')
-    await userEvent.selectOptions(categorySelect(), 'Groceries')
+    await userEvent.selectOptions(
+      categorySelect(),
+      within(categorySelect()).getByRole('option', { name: 'Groceries' }),
+    )
     await submit()
 
     expect(amountInput()).toHaveAccessibleDescription(
@@ -173,7 +188,10 @@ describe('success flourish on the Add button', () => {
 
   async function addOne() {
     await userEvent.type(amountInput(), '12.50')
-    await userEvent.selectOptions(categorySelect(), 'Groceries')
+    await userEvent.selectOptions(
+      categorySelect(),
+      within(categorySelect()).getByRole('option', { name: 'Groceries' }),
+    )
     await submit()
   }
 

@@ -1,3 +1,4 @@
+import { categoryOptionText } from '@/shared/lib/categories'
 import { useId } from 'react'
 import type { Category } from '@/shared/types'
 import type { FormDraft } from '@/shared/hooks/useFormDraft'
@@ -91,8 +92,12 @@ export function TransactionFields({
         >
           <option value="">Choose a category</option>
           {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
+            <option
+              key={category.id}
+              value={category.id}
+              aria-label={category.name}
+            >
+              {categoryOptionText(category)}
             </option>
           ))}
         </select>

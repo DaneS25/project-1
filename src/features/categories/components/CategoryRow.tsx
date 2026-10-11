@@ -1,3 +1,4 @@
+import { CategoryName } from '@/shared/components/CategoryName'
 import type { Category } from '@/shared/types'
 import { Button } from '@/shared/components/Button'
 import { budgetLabel } from '../logic/budgetText'
@@ -30,7 +31,9 @@ export function CategoryRow({
   return (
     <li className={styles.item}>
       <div className={styles.details}>
-        <p className={styles.name}>{category.name}</p>
+        <p className={styles.name}>
+          <CategoryName name={category.name} emoji={category.emoji} />
+        </p>
         <p className={styles.budget}>{budget}</p>
         <p className={styles.usage}>
           {transactionCountLabel(transactionCount)}
