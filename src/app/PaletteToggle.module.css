@@ -1,0 +1,89 @@
+/* Matches the theme toggle's pill so the two sit together in the header. */
+.toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: calc(2.25rem + 8px);
+  padding: var(--space-1) var(--space-3);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-text);
+    }
+  }
+
+  /* On is raised, bolder, coloured and the heart fills: not colour alone. */
+  &[aria-pressed='true'] {
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+
+    & .icon {
+      fill: currentcolor;
+      color: var(--color-accent-text);
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: focus-ring-in var(--dur-fast) var(--ease-out);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+
+    &[aria-pressed='true'] .icon {
+      animation: icon-in var(--dur-base) var(--ease-out);
+    }
+  }
+}
+
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+/* On narrow screens only the heart shows; the words stay the button's name. */
+@media (width < 34rem) {
+  .label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@keyframes icon-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+/* Same ring fade as the global :focus-visible (keyframes are per module). */
+@keyframes focus-ring-in {
+  from {
+    outline-color: transparent;
+  }
+}
