@@ -120,3 +120,45 @@ describe('backupRawData', () => {
     })
   })
 })
+
+describe('loadData across the version 2 bump (category emojis)', () => {
+  it('loads data saved at version 1, with categories keeping no emoji', () => {
+    store({ version: 1, data })
+
+    expect(loadData()).toEqual({ status: 'loaded', data })
+  })
+
+  it('saves loaded version 1 data back at the current version', () => {
+    store({ version: 1, data })
+    const loaded = loadData()
+    if (loaded.status !== 'loaded') throw new Error('expected loaded data')
+
+    saveData(loaded.data)
+
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '')).toEqual({
+      version: 2,
+      data,
+    })
+  })
+
+  it('round-trips a category emoji at version 2', () => {
+    const withEmoji: AppData = {
+      ...data,
+      categories: [
+        { id: 'c1', name: 'Groceries', monthlyBudgetCents: 60000, emoji: '🛒' },
+      ],
+    }
+    saveData(withEmoji)
+
+    expect(loadData()).toEqual({ status: 'loaded', data: withEmoji })
+  })
+
+  it('loads version 2 data with an invalid emoji, dropping only the emoji', () => {
+    store({
+      version: 2,
+      data: { ...data, categories: [{ ...data.categories[0], emoji: 'abc' }] },
+    })
+
+    expect(loadData()).toEqual({ status: 'loaded', data })
+  })
+})

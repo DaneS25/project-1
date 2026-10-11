@@ -126,3 +126,36 @@ describe('parseAppData', () => {
     })
   })
 })
+
+describe('parseAppData category emoji', () => {
+  it('keeps a valid emoji', () => {
+    const result = parseAppData(withCategory({ ...groceries, emoji: '🛒' }))
+
+    expect(result).toEqual({
+      ok: true,
+      value: { categories: [{ ...groceries, emoji: '🛒' }], transactions: [] },
+    })
+  })
+
+  it('leaves out the emoji key when a category has no emoji', () => {
+    const result = parseAppData(withCategory(groceries))
+
+    expect(result.ok && 'emoji' in (result.value.categories[0] ?? {})).toBe(
+      false,
+    )
+  })
+
+  it.each([
+    ['an empty string', ''],
+    ['two emojis', '🛒🏠'],
+    ['plain text', 'food'],
+    ['a number', 5],
+    ['null', null],
+    ['a very long string', '🛒'.repeat(20)],
+  ])('keeps the category but drops an emoji that is %s', (_label, emoji) => {
+    expect(parseAppData(withCategory({ ...groceries, emoji }))).toEqual({
+      ok: true,
+      value: { categories: [groceries], transactions: [] },
+    })
+  })
+})

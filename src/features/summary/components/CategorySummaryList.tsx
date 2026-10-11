@@ -1,3 +1,4 @@
+import { CategoryName } from '@/shared/components/CategoryName'
 import { formatCents } from '@/shared/lib/money'
 import { budgetFill } from '../logic/progress'
 import type { CategorySummary } from '../logic/summary'
@@ -19,7 +20,12 @@ export function CategorySummaryList({ categories }: CategorySummaryListProps) {
     <ul className={styles.categories}>
       {categories.map((summary) => (
         <li key={summary.category.id} className={styles.category}>
-          <p className={styles.categoryName}>{summary.category.name}</p>
+          <p className={styles.categoryName}>
+            <CategoryName
+              name={summary.category.name}
+              emoji={summary.category.emoji}
+            />
+          </p>
           {summary.kind === 'budgeted' ? (
             <>
               <p className={styles.spent}>

@@ -4,6 +4,7 @@ import {
   categoryNameKey,
   isCategoryNameTaken,
   sortCategoriesByName,
+  categoryOptionText,
 } from './categories'
 
 const categories: Category[] = [
@@ -45,5 +46,28 @@ describe('sortCategoriesByName', () => {
       'a',
     ])
     expect(input.map((c) => c.id)).toEqual(['a', 'b', 'c'])
+  })
+})
+
+describe('categoryOptionText', () => {
+  it('puts the emoji before the name', () => {
+    expect(
+      categoryOptionText({
+        id: 'c1',
+        name: 'Groceries',
+        monthlyBudgetCents: 0,
+        emoji: '🛒',
+      }),
+    ).toBe('🛒 Groceries')
+  })
+
+  it('is just the name without an emoji', () => {
+    expect(
+      categoryOptionText({
+        id: 'c1',
+        name: 'Groceries',
+        monthlyBudgetCents: 0,
+      }),
+    ).toBe('Groceries')
   })
 })

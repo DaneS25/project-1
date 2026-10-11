@@ -1,3 +1,4 @@
+import { CategoryName } from '@/shared/components/CategoryName'
 import { useId, type ReactNode } from 'react'
 import { addMonths, formatIsoDate, formatMonth } from '@/shared/lib/dates'
 import { formatCents } from '@/shared/lib/money'
@@ -93,7 +94,12 @@ export function StatsStrip({ data, month }: StatsStripProps) {
             <dd className={styles.empty}>{NO_DATA}</dd>
           ) : (
             <>
-              <dd className={styles.value}>{top.category.name}</dd>
+              <dd className={styles.value}>
+                <CategoryName
+                  name={top.category.name}
+                  emoji={top.category.emoji}
+                />
+              </dd>
               <dd className={styles.detail}>
                 {formatCents(top.spentCents)},{' '}
                 {formatShare(top.spentCents, breakdown.value.totalCents)} of

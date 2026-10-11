@@ -1,4 +1,5 @@
 import { isIsoDate } from '@/shared/lib/dates'
+import { isCategoryEmoji } from '@/shared/lib/emoji'
 import type { AppData, Category, Result, Transaction } from '@/shared/types'
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
@@ -35,7 +36,7 @@ function parseTransaction(value: unknown): Transaction | null {
 /** Rebuilds a category from untrusted input, dropping unknown fields. */
 function parseCategory(value: unknown): Category | null {
   if (!isRecord(value)) return null
-  const { id, name, monthlyBudgetCents } = value
+  const { id, name, monthlyBudgetCents, emoji } = value
   if (
     !isNonEmptyString(id) ||
     !isNonEmptyString(name) ||
@@ -43,7 +44,10 @@ function parseCategory(value: unknown): Category | null {
   ) {
     return null
   }
-  return { id, name, monthlyBudgetCents }
+  // The emoji is decorative and its validity depends on the engine's Unicode
+  // data, so a bad one is dropped rather than failing the whole store.
+  if (!isCategoryEmoji(emoji)) return { id, name, monthlyBudgetCents }
+  return { id, name, monthlyBudgetCents, emoji }
 }
 
 function parseList<T>(

@@ -74,9 +74,9 @@ export function TransactionList() {
 
   const sorted = sortNewestFirst(data.transactions)
   const rows = withLeavingRow(sorted, leaving)
-  const categoryNames = new Map(data.categories.map((c) => [c.id, c.name]))
+  const categoriesById = new Map(data.categories.map((c) => [c.id, c]))
   const categoryName = (transaction: Transaction) =>
-    categoryNames.get(transaction.categoryId) ?? 'Unknown category'
+    categoriesById.get(transaction.categoryId)?.name ?? 'Unknown category'
   const dialogTransaction = data.transactions.find(
     (t) => t.id === openDialog?.id,
   )
@@ -120,6 +120,7 @@ export function TransactionList() {
                 setLeaving(null)
               }}
               categoryName={categoryName(transaction)}
+              categoryEmoji={categoriesById.get(transaction.categoryId)?.emoji}
               editButtonRef={(button) => {
                 if (button) editButtons.current.set(transaction.id, button)
                 else editButtons.current.delete(transaction.id)

@@ -183,3 +183,63 @@ describe('CategoryList', () => {
     expect(writes).toEqual([])
   })
 })
+
+describe('CategoryList emojis', () => {
+  const groceriesWithEmoji: Category = { ...groceries, emoji: '🛒' }
+
+  it('shows the emoji before the name, hidden from screen readers', () => {
+    renderList([groceriesWithEmoji])
+
+    const row = screen.getByRole('listitem')
+    expect(row.textContent).toMatch(/^🛒Groceries\$600\.00/)
+    expect(within(row).getByText('🛒')).toHaveAttribute('aria-hidden', 'true')
+    expect(
+      screen.getByRole('button', { name: 'Edit Groceries, $600.00' }),
+    ).toBeInTheDocument()
+  })
+
+  it('opens the edit dialog with the saved emoji chosen', async () => {
+    renderList([groceriesWithEmoji])
+    await editGroceries()
+
+    expect(
+      inDialog().getByRole('radio', { name: 'Shopping cart' }),
+    ).toBeChecked()
+  })
+
+  it('picks an emoji for a category and saves it', async () => {
+    const { items } = renderList()
+    await editGroceries()
+
+    await userEvent.click(inDialog().getByRole('radio', { name: 'Apple' }))
+    await save()
+
+    expect(rows()[1]).toMatch(/^🍎Groceries/)
+    expect(storedData(items)).toMatchObject({
+      data: { categories: [rent, { id: 'c1', emoji: '🍎' }, eatingOut] },
+    })
+  })
+
+  it('clears an emoji with None', async () => {
+    const { items } = renderList([groceriesWithEmoji])
+    await editGroceries()
+
+    await userEvent.click(inDialog().getByRole('radio', { name: 'None' }))
+    await save()
+
+    expect(rows()[0]).toMatch(/^Groceries/)
+    expect(storedData(items)).toMatchObject({
+      data: { categories: [groceries] },
+    })
+    expect(JSON.stringify(storedData(items))).not.toContain('emoji')
+  })
+
+  it('keeps a saved emoji that is not in the picker when editing', async () => {
+    renderList([{ ...groceries, emoji: '🦄' }])
+    await editGroceries()
+
+    expect(
+      inDialog().getByRole('radio', { name: 'Current emoji' }),
+    ).toBeChecked()
+  })
+})

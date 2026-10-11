@@ -32,3 +32,13 @@ export function sortCategoriesByName(
 ): Category[] {
   return [...categories].sort(compareCategoryNames)
 }
+
+/**
+ * Text for a category `<option>`, which can't hold markup: the emoji, then
+ * the name. Pair it with `aria-label={name}` so only the name is read.
+ */
+export function categoryOptionText(category: Category): string {
+  return category.emoji === undefined
+    ? category.name
+    : `${category.emoji} ${category.name}`
+}

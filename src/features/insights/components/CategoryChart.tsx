@@ -2,7 +2,10 @@ import { useId, useState } from 'react'
 import formStyles from '@/shared/components/Form.module.css'
 import { useElementWidth } from '@/shared/hooks/useElementWidth'
 import { useFirstView } from '@/shared/hooks/useFirstView'
-import { sortCategoriesByName } from '@/shared/lib/categories'
+import {
+  sortCategoriesByName,
+  categoryOptionText,
+} from '@/shared/lib/categories'
 import { formatMonth } from '@/shared/lib/dates'
 import { formatCents } from '@/shared/lib/money'
 import type { AppData, Id, MonthKey } from '@/shared/types'
@@ -76,8 +79,12 @@ export function CategoryChart({ data, month }: CategoryChartProps) {
           }}
         >
           {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
+            <option
+              key={category.id}
+              value={category.id}
+              aria-label={category.name}
+            >
+              {categoryOptionText(category)}
             </option>
           ))}
         </select>

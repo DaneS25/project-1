@@ -38,25 +38,37 @@ describe('parseBudgetToCents', () => {
 describe('validateCategoryDraft', () => {
   it('turns a valid draft into a category with a trimmed name', () => {
     expect(
-      validateCategoryDraft({ name: '  Fuel ', budget: '80' }, categories),
+      validateCategoryDraft(
+        { name: '  Fuel ', budget: '80', emoji: '' },
+        categories,
+      ),
     ).toEqual({ ok: true, value: { name: 'Fuel', monthlyBudgetCents: 8000 } })
   })
 
   it('accepts a blank budget as no budget', () => {
     expect(
-      validateCategoryDraft({ name: 'Fuel', budget: '' }, categories),
+      validateCategoryDraft(
+        { name: 'Fuel', budget: '', emoji: '' },
+        categories,
+      ),
     ).toEqual({ ok: true, value: { name: 'Fuel', monthlyBudgetCents: 0 } })
   })
 
   it('requires a name', () => {
     expect(
-      validateCategoryDraft({ name: '   ', budget: '10' }, categories),
+      validateCategoryDraft(
+        { name: '   ', budget: '10', emoji: '' },
+        categories,
+      ),
     ).toEqual({ ok: false, error: { name: 'Enter a name.' } })
   })
 
   it('rejects a name another category has, ignoring case', () => {
     expect(
-      validateCategoryDraft({ name: 'rent', budget: '' }, categories),
+      validateCategoryDraft(
+        { name: 'rent', budget: '', emoji: '' },
+        categories,
+      ),
     ).toEqual({
       ok: false,
       error: { name: 'Another category already has this name.' },
@@ -66,7 +78,7 @@ describe('validateCategoryDraft', () => {
   it('lets a category keep its own name', () => {
     expect(
       validateCategoryDraft(
-        { name: 'GROCERIES', budget: '1' },
+        { name: 'GROCERIES', budget: '1', emoji: '' },
         categories,
         'c1',
       ),
@@ -75,7 +87,10 @@ describe('validateCategoryDraft', () => {
 
   it('reports a bad budget', () => {
     expect(
-      validateCategoryDraft({ name: 'Fuel', budget: '-10' }, categories),
+      validateCategoryDraft(
+        { name: 'Fuel', budget: '-10', emoji: '' },
+        categories,
+      ),
     ).toEqual({
       ok: false,
       error: { budget: 'The budget can’t be negative.' },
@@ -83,10 +98,47 @@ describe('validateCategoryDraft', () => {
   })
 
   it('reports every invalid field in form order', () => {
-    const result = validateCategoryDraft({ name: '', budget: 'x' }, categories)
+    const result = validateCategoryDraft(
+      { name: '', budget: 'x', emoji: '' },
+      categories,
+    )
     expect(result.ok ? [] : Object.keys(result.error)).toEqual([
       'name',
       'budget',
     ])
+  })
+})
+
+describe('validateCategoryDraft emoji', () => {
+  it('keeps a chosen emoji', () => {
+    expect(
+      validateCategoryDraft(
+        { name: 'Fuel', budget: '', emoji: '⛽' },
+        categories,
+      ),
+    ).toEqual({
+      ok: true,
+      value: { name: 'Fuel', monthlyBudgetCents: 0, emoji: '⛽' },
+    })
+  })
+
+  it('leaves the emoji out when None is chosen', () => {
+    const result = validateCategoryDraft(
+      { name: 'Fuel', budget: '', emoji: '' },
+      categories,
+    )
+    expect(result.ok && 'emoji' in result.value).toBe(false)
+  })
+
+  it('rejects text that is not a single emoji', () => {
+    expect(
+      validateCategoryDraft(
+        { name: 'Fuel', budget: '', emoji: 'ab' },
+        categories,
+      ),
+    ).toEqual({
+      ok: false,
+      error: { emoji: 'Choose an emoji from the list, or None.' },
+    })
   })
 })

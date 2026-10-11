@@ -1,5 +1,6 @@
 import type { FieldErrors } from '@/shared/hooks/useFormDraft'
 import { isCategoryNameTaken } from '@/shared/lib/categories'
+import { isCategoryEmoji } from '@/shared/lib/emoji'
 import { parseAmountToCents, type AmountError } from '@/shared/lib/money'
 import type { Category, Cents, Id, Result } from '@/shared/types'
 
@@ -7,6 +8,15 @@ import type { Category, Cents, Id, Result } from '@/shared/types'
 export type CategoryDraft = {
   name: string
   budget: string
+  /** The chosen emoji, or '' for none. */
+  emoji: string
+}
+
+/** A blank draft for the add form. */
+export const EMPTY_CATEGORY_DRAFT: CategoryDraft = {
+  name: '',
+  budget: '',
+  emoji: '',
 }
 
 export type BudgetError =
@@ -47,7 +57,8 @@ export function parseBudgetToCents(input: string): Result<Cents, BudgetError> {
 /**
  * Checks a draft and turns it into a category (without an id). The name is
  * trimmed, required and must not match another category's name, ignoring
- * case (`exceptId` is the category being edited).
+ * case (`exceptId` is the category being edited). The emoji is optional:
+ * '' means none, anything else must be a single emoji.
  */
 export function validateCategoryDraft(
   draft: CategoryDraft,
@@ -66,10 +77,16 @@ export function validateCategoryDraft(
   const budget = parseBudgetToCents(draft.budget)
   if (!budget.ok) errors.budget = budgetErrorMessage(budget.error)
 
+  const emoji = draft.emoji
+  if (emoji !== '' && !isCategoryEmoji(emoji)) {
+    errors.emoji = 'Choose an emoji from the list, or None.'
+  }
+
   if (!budget.ok || Object.keys(errors).length > 0) {
     return { ok: false, error: errors }
   }
-  return { ok: true, value: { name, monthlyBudgetCents: budget.value } }
+  const category = { name, monthlyBudgetCents: budget.value }
+  return { ok: true, value: emoji === '' ? category : { ...category, emoji } }
 }
 
 function budgetErrorMessage(error: BudgetError): string {

@@ -25,6 +25,8 @@ export type Category = {
   id: Id
   name: string
   monthlyBudgetCents: Cents
+  /** A single emoji shown before the name (decorative). */
+  emoji?: string
 }
 
 /** Everything the app persists. */

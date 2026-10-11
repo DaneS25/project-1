@@ -3,13 +3,14 @@ import { FormField } from '@/shared/components/FormField'
 import styles from '@/shared/components/Form.module.css'
 import type { FormDraft } from '@/shared/hooks/useFormDraft'
 import type { CategoryDraft } from '../logic/categoryDraft'
+import { EmojiPicker } from './EmojiPicker'
 
 type CategoryFieldsProps = {
   form: FormDraft<CategoryDraft>
   onChange: (field: keyof CategoryDraft, value: string) => void
 }
 
-/** The name and monthly budget fields shared by add and edit. */
+/** The name, monthly budget and emoji fields shared by add and edit. */
 export function CategoryFields({ form, onChange }: CategoryFieldsProps) {
   const id = useId()
   const { draft, errors, register } = form
@@ -73,6 +74,14 @@ export function CategoryFields({ form, onChange }: CategoryFieldsProps) {
           />
         </div>
       </FormField>
+      <EmojiPicker
+        value={draft.emoji}
+        error={errors.emoji}
+        errorId={errorId('emoji')}
+        onChange={(emoji) => {
+          onChange('emoji', emoji)
+        }}
+      />
     </div>
   )
 }

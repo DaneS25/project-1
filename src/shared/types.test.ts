@@ -30,11 +30,12 @@ describe('Transaction', () => {
 })
 
 describe('Category', () => {
-  it('has an id, name and monthly budget in cents', () => {
+  it('has an id, name, monthly budget in cents and an optional emoji', () => {
     expectTypeOf<Category>().toEqualTypeOf<{
       id: string
       name: string
       monthlyBudgetCents: number
+      emoji?: string
     }>()
   })
 })

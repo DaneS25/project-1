@@ -1,3 +1,4 @@
+import { CategoryName } from '@/shared/components/CategoryName'
 import { OverBudgetNote } from '@/features/summary'
 import { useFirstView } from '@/shared/hooks/useFirstView'
 import { formatMonth } from '@/shared/lib/dates'
@@ -62,7 +63,12 @@ export function BudgetChart({ data, month }: BudgetChartProps) {
             className={styles.row}
             data-category={summary.category.id}
           >
-            <p className={styles.name}>{summary.category.name}</p>
+            <p className={styles.name}>
+              <CategoryName
+                name={summary.category.name}
+                emoji={summary.category.emoji}
+              />
+            </p>
             <p className={styles.amounts}>
               {summary.kind === 'budgeted'
                 ? `${formatCents(summary.spentCents)} spent of ${formatCents(summary.budgetCents)}`
@@ -118,7 +124,12 @@ export function BudgetChart({ data, month }: BudgetChartProps) {
           <tbody>
             {rows.map((summary) => (
               <tr key={summary.category.id}>
-                <th scope="row">{summary.category.name}</th>
+                <th scope="row">
+                  <CategoryName
+                    name={summary.category.name}
+                    emoji={summary.category.emoji}
+                  />
+                </th>
                 <td>{formatCents(summary.spentCents)}</td>
                 {summary.kind === 'budgeted' ? (
                   <>
