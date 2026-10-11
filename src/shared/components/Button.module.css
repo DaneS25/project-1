@@ -118,6 +118,52 @@
   pointer-events: none;
 }
 
+/*
+ * Pink mode: the flare becomes a soft sparkle burst, a small glow ringed by
+ * glint and lilac specks that spread out as it scales. Same colours as the
+ * flare (glint) plus accent-cool, both at least 4.9:1 under the label, and
+ * the same reduced-motion-gated animation.
+ */
+:root[data-palette='pink'] .primary::after {
+  inline-size: 180%;
+  background:
+    radial-gradient(
+      circle at 50% 14%,
+      var(--color-accent-glint) 0 2.5%,
+      transparent 3.5%
+    ),
+    radial-gradient(
+      circle at 80% 30%,
+      var(--color-accent-cool) 0 2%,
+      transparent 3%
+    ),
+    radial-gradient(
+      circle at 86% 64%,
+      var(--color-accent-glint) 0 2.5%,
+      transparent 3.5%
+    ),
+    radial-gradient(
+      circle at 56% 88%,
+      var(--color-accent-cool) 0 2%,
+      transparent 3%
+    ),
+    radial-gradient(
+      circle at 20% 76%,
+      var(--color-accent-glint) 0 2.5%,
+      transparent 3.5%
+    ),
+    radial-gradient(
+      circle at 14% 36%,
+      var(--color-accent-cool) 0 2%,
+      transparent 3%
+    ),
+    radial-gradient(
+      circle,
+      color-mix(in oklch, var(--color-accent-glint) 70%, transparent),
+      transparent 30%
+    );
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .primary[data-flare='a']::after {
     animation: flare-a var(--dur-slow) var(--ease-out);

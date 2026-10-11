@@ -1,0 +1,14 @@
+/* Hand-drawn style: soft rounded strokes in the current text colour. */
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.filled {
+  fill: currentcolor;
+  fill-opacity: 0.25;
+}

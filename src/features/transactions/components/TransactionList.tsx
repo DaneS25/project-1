@@ -107,6 +107,7 @@ export function TransactionList() {
         <EmptyState
           title="No transactions yet"
           description="Transactions you add will appear here."
+          pinkEmoji="🧸"
         />
       ) : (
         <ul className={styles.list}>

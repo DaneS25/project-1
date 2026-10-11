@@ -44,6 +44,7 @@ export function TransactionForm({ today }: TransactionFormProps) {
       <EmptyState
         title="No categories yet"
         description="Add a category before adding transactions."
+        pinkEmoji="🌱"
       />
     )
   }

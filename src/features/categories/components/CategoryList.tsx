@@ -101,6 +101,7 @@ export function CategoryList() {
         <EmptyState
           title="No categories yet"
           description="Add a category to start budgeting."
+          pinkEmoji="🎀"
         />
       ) : (
         <ul className={styles.list}>

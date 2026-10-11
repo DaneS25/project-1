@@ -60,6 +60,7 @@ export function MonthlySummary({ today }: MonthlySummaryProps) {
           <EmptyState
             title={`No spending in ${formatMonth(month)}`}
             description="Transactions you add for this month will show here."
+            pinkEmoji="🐷"
           />
         ) : (
           <>

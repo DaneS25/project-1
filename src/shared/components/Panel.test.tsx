@@ -1,6 +1,10 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Panel } from './Panel'
+
+afterEach(() => {
+  delete document.documentElement.dataset.palette
+})
 
 describe('Panel', () => {
   it('is a region named by its heading', () => {
@@ -25,5 +29,32 @@ describe('Panel', () => {
     )
 
     expect(screen.getByText('Newest first')).toBeInTheDocument()
+  })
+
+  it('leaves out its pink icon in sunset mode', () => {
+    render(
+      <Panel title="Categories" pinkIcon="🎀">
+        <p>Content</p>
+      </Panel>,
+    )
+
+    expect(screen.queryByText('🎀')).not.toBeInTheDocument()
+  })
+
+  it('shows its pink icon in pink mode without changing the heading name', () => {
+    document.documentElement.dataset.palette = 'pink'
+    render(
+      <Panel title="Categories" pinkIcon="🎀">
+        <p>Content</p>
+      </Panel>,
+    )
+
+    expect(screen.getByText('🎀')).toHaveAttribute('aria-hidden', 'true')
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Categories' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('region', { name: 'Categories' }),
+    ).toBeInTheDocument()
   })
 })

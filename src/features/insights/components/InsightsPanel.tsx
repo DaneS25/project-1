@@ -73,6 +73,7 @@ export function InsightsPanel({ today }: InsightsPanelProps) {
         <EmptyState
           title={`No spending in ${formatMonth(month)}`}
           description="Add transactions for this month to see charts of where the money went."
+          pinkEmoji="🌈"
         />
       ) : (
         <ChartCarousel slides={slides} />
