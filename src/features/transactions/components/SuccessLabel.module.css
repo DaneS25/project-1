@@ -47,6 +47,12 @@
   stroke-linejoin: round;
 }
 
+.check .heart {
+  position: relative;
+  fill: currentcolor;
+  stroke-width: 2;
+}
+
 .wrap[data-done] {
   & .label {
     opacity: 0;

@@ -32,6 +32,12 @@
   }
 }
 
+.pinkIcon {
+  display: inline-flex;
+  font-size: 1.1em;
+  line-height: 1;
+}
+
 .description {
   font-size: var(--text-sm);
   color: var(--color-text-muted);

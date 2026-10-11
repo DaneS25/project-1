@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react'
+import { PinkDecoration } from '@/shared/components/PinkDecoration'
+import { CuteIcon } from '@/shared/components/icons/CuteIcon'
 import styles from './AppShell.module.css'
 import { PaletteToggle } from './PaletteToggle'
 import { ThemeToggle } from './ThemeToggle'
@@ -35,7 +37,12 @@ export function AppShell({ children }: AppShellProps) {
             <path className={styles.logoArc} d="M16 8a8 8 0 0 1 7.6 10.5" />
           </svg>
           <div>
-            <h1 className={styles.title}>Budget</h1>
+            <h1 className={styles.title}>
+              Budget
+              <PinkDecoration className={styles.titleFlower}>
+                <CuteIcon name="flower" size={22} isFilled />
+              </PinkDecoration>
+            </h1>
             <p className={styles.tagline}>
               Track spending against your monthly budgets
             </p>

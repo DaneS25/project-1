@@ -7,6 +7,7 @@ import { InsightsPanel } from '@/features/insights'
 import { MonthlySummary } from '@/features/summary'
 import { TransactionForm, TransactionList } from '@/features/transactions'
 import { Panel } from '@/shared/components/Panel'
+import { CuteIcon } from '@/shared/components/icons/CuteIcon'
 import { toIsoDate } from '@/shared/lib/dates'
 import { AppDataProvider } from '@/shared/store/AppDataProvider'
 import type { IsoDate } from '@/shared/types'
@@ -27,20 +28,30 @@ export function App({ today: fixedToday }: AppProps) {
         <AppShell>
           <StorageNotice />
           <div className={styles.grid}>
-            <Panel title="Add a transaction" description="Record an expense">
+            <Panel
+              title="Add a transaction"
+              description="Record an expense"
+              pinkIcon={<CuteIcon name="heart" isFilled />}
+            >
               <TransactionForm today={today} />
             </Panel>
             <Panel
               title="Monthly summary"
+              pinkIcon={<CuteIcon name="piggyBank" isFilled />}
               description="Spending against each category's budget"
             >
               <MonthlySummary today={today} />
             </Panel>
-            <Panel title="Transactions" description="Newest first">
+            <Panel
+              title="Transactions"
+              description="Newest first"
+              pinkIcon="💌"
+            >
               <TransactionList />
             </Panel>
             <Panel
               title="Categories"
+              pinkIcon="🎀"
               description="Monthly budgets, sorted by name"
             >
               <CategoryForm />
@@ -48,6 +59,7 @@ export function App({ today: fixedToday }: AppProps) {
             </Panel>
             <Panel
               title="Insights"
+              pinkIcon={<CuteIcon name="sparkle" isFilled />}
               description="Charts of where your money goes"
             >
               <InsightsPanel today={today} />

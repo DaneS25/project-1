@@ -22,6 +22,18 @@
   border-radius: var(--radius-full);
 }
 
+.emoji {
+  display: grid;
+  place-items: center;
+  inline-size: 3.5rem;
+  aspect-ratio: 1;
+  margin-block-end: var(--space-2);
+  font-size: 2rem;
+  line-height: 1;
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-full);
+}
+
 .title {
   font-weight: var(--weight-semibold);
 }
